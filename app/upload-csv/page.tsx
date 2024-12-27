@@ -136,7 +136,7 @@ export default function UploadCSV() {
                     </button>
                 </div>
                 <button onClick={handleImportTestCSV} className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-                    Import Test CSV
+                    Upload Test CSV
                 </button>
 
                 {statusMessage && <div className="mt-3 text-sm text-white-800">{statusMessage}</div>}
