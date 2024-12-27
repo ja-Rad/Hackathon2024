@@ -11,7 +11,7 @@ declare global {
 }
 
 if (!uri) {
-    throw new Error("Add Mongo URI to .env.local");
+    throw new Error("Add Mongo URI to .env");
 }
 
 if (process.env.NODE_ENV === "development") {
