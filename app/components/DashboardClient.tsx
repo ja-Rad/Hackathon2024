@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import * as d3 from "d3";
 import { metricDescriptions } from "../utils/metrics";
 
 interface Match {
@@ -11,32 +12,7 @@ interface Match {
     score: string;
     date: string;
     metrics: {
-        shotsOnTarget: number;
-        possession: string;
-        fouls: number;
-        yellowCards: number;
-        completedPassesIntoTheBox: number;
-        pressures: number;
-        xG: string;
-        xGConceded: string;
-        tackles: number;
-        passes: number;
-        oppositionPasses: number;
-        xGWithin8SecondsOfCorner: string;
-        shotsWithin8SecondsOfCorner: number;
-        goalsWithin8SecondsOfCorner: number;
-        decelerations: number;
-        accelerations: number;
-        hsr: number;
-        sprints: number;
-        jumps: number;
-        xGWithin8SecondsOfFreeKick: string;
-        shotsWithin8SecondsOfFreeKick: number;
-        goalsWithin8SecondsOfFreeKick: number;
-        pressuresRegained: number;
-        monteCarloWinProb: string;
-        monteCarloDrawProb: string;
-        monteCarloLossProb: string;
+        [key: string]: number | string;
     };
 }
 
@@ -44,7 +20,8 @@ export default function DashboardClient() {
     const [matches, setMatches] = useState<Match[]>([]);
     const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
     const [averageMetrics, setAverageMetrics] = useState<Match["metrics"] | null>(null);
-
+    const [selectedMetric, setSelectedMetric] = useState<string | null>(null); // Track the selected metric for the bar chart
+    const chartRef = useRef<HTMLDivElement>(null); // Ref for D3.js chart container
     const metricsRef = useRef<HTMLDivElement>(null); // Ref for draggable metric container
 
     useEffect(() => {
@@ -66,10 +43,22 @@ export default function DashboardClient() {
         fetchMatches();
     }, []);
 
-    const calculateAverageMetrics = (matches: Match[]): Match["metrics"] => {
-        if (matches.length === 0) return {} as Match["metrics"];
+    useEffect(() => {
+        if (selectedMetric && chartRef.current && selectedMatch === null) {
+            const last10Matches = matches.slice(0, 10);
+            const data = last10Matches.map((match) => ({
+                value: parseFloat(match.metrics[selectedMetric] as string) || 0,
+                label: match.date,
+            }));
 
-        const keys = Object.keys(matches[0].metrics) as Array<keyof Match["metrics"]>;
+            renderBarChart(data);
+        }
+    }, [selectedMetric, selectedMatch, matches]);
+
+    const calculateAverageMetrics = (matches: Match[]): Match["metrics"] => {
+        if (matches.length === 0) return {};
+
+        const keys = Object.keys(matches[0].metrics);
         const averages: Partial<Match["metrics"]> = {};
 
         keys.forEach((key) => {
@@ -78,6 +67,70 @@ export default function DashboardClient() {
         });
 
         return averages as Match["metrics"];
+    };
+
+    const renderBarChart = (data: { value: number; label: string }[]) => {
+        const width = 500;
+        const height = 300;
+        const margin = { top: 20, right: 30, bottom: 40, left: 50 };
+
+        const svg = d3
+            .select(chartRef.current)
+            .html("") // Clear previous chart
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        const x = d3
+            .scaleBand()
+            .domain(data.map((d) => d.label))
+            .range([0, width])
+            .padding(0.2);
+
+        const y = d3
+            .scaleLinear()
+            .domain([0, d3.max(data, (d) => d.value) || 0])
+            .nice()
+            .range([height, 0]);
+
+        // X-axis
+        svg.append("g").attr("transform", `translate(0,${height})`).call(d3.axisBottom(x).tickSize(0)).selectAll("text").attr("transform", "rotate(-45)").style("text-anchor", "end");
+
+        // Y-axis
+        svg.append("g").call(d3.axisLeft(y));
+
+        // Bars
+        svg.selectAll(".bar")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("class", "bar")
+            .attr("x", (d) => x(d.label) || 0)
+            .attr("y", (d) => y(d.value))
+            .attr("width", x.bandwidth())
+            .attr("height", (d) => height - y(d.value))
+            .attr("fill", "#4F46E5")
+            .attr("opacity", 0.8)
+            .on("mouseover", function () {
+                d3.select(this).attr("opacity", 1);
+            })
+            .on("mouseout", function () {
+                d3.select(this).attr("opacity", 0.8);
+            });
+
+        // Labels
+        svg.selectAll(".label")
+            .data(data)
+            .enter()
+            .append("text")
+            .attr("class", "label")
+            .attr("x", (d) => (x(d.label) || 0) + x.bandwidth() / 2)
+            .attr("y", (d) => y(d.value) - 5)
+            .attr("text-anchor", "middle")
+            .text((d) => d.value.toFixed(2))
+            .attr("fill", "#fff");
     };
 
     const handleMouseDown = (e: React.MouseEvent) => {
@@ -107,7 +160,11 @@ export default function DashboardClient() {
             <h3 className="text-lg font-bold text-gray-200 mb-2">{title}</h3>
             <div ref={metricsRef} className="overflow-hidden whitespace-nowrap bg-gray-800 rounded p-4 cursor-grab active:cursor-grabbing" onMouseDown={handleMouseDown}>
                 {Object.entries(metrics).map(([key, value]) => (
-                    <div key={key} className="inline-block px-4 py-2 m-2 bg-gray-700 hover:bg-gray-600 rounded cursor-pointer text-sm text-gray-200 group relative">
+                    <div
+                        key={key}
+                        onClick={() => setSelectedMetric(key)} // Select metric for bar chart
+                        className="inline-block px-4 py-2 m-2 bg-gray-700 hover:bg-gray-600 rounded cursor-pointer text-sm text-gray-200 group relative"
+                    >
                         <span className="font-medium">{key.replace(/([A-Z])/g, " $1")}: </span>
                         <span className="text-gray-300">{value}</span>
                         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 z-10 whitespace-nowrap">{metricDescriptions[key as keyof typeof metricDescriptions] || "No description available."}</div>
@@ -120,12 +177,25 @@ export default function DashboardClient() {
     return (
         <div className="flex h-screen bg-gray-900 text-gray-100">
             <div className="w-1/4 bg-gray-800 overflow-y-auto border-r border-gray-700">
-                <div className={`p-4 cursor-pointer hover:bg-gray-700 ${selectedMatch === null ? "bg-gray-700" : ""}`} onClick={() => setSelectedMatch(null)}>
+                <div
+                    className={`p-4 cursor-pointer hover:bg-gray-700 ${selectedMatch === null ? "bg-gray-700" : ""}`}
+                    onClick={() => {
+                        setSelectedMatch(null);
+                    }}
+                >
                     <div className="font-bold text-gray-200">Most Recent Matches</div>
                     <div className="text-sm text-gray-400">Averages from the last 10 matches</div>
                 </div>
                 {matches.map((match) => (
-                    <div key={match.id} className={`p-4 cursor-pointer hover:bg-gray-700 ${selectedMatch?.id === match.id ? "bg-gray-700" : ""}`} onClick={() => setSelectedMatch(match)}>
+                    <div
+                        key={match.id}
+                        className={`p-4 cursor-pointer hover:bg-gray-700 ${selectedMatch?.id === match.id ? "bg-gray-700" : ""}`}
+                        onClick={() => {
+                            setSelectedMatch(match);
+                            // Clear all D3 SVGs when not in "Most Recent Matches"
+                            d3.select(chartRef.current).selectAll("svg").remove();
+                        }}
+                    >
                         <div className="font-bold text-gray-200">
                             {match.homeTeam} vs {match.awayTeam}
                         </div>
@@ -172,7 +242,10 @@ export default function DashboardClient() {
                         })}
                     </>
                 ) : averageMetrics ? (
-                    <>{renderMetricCategory("General (Averages)", averageMetrics)}</>
+                    <>
+                        {renderMetricCategory("General (Averages)", averageMetrics)}
+                        <div ref={chartRef} className="mt-6"></div>
+                    </>
                 ) : (
                     <div className="text-gray-400 text-center">Select a match to see details.</div>
                 )}
