@@ -109,7 +109,12 @@ export default function InsightsPage({ params }: { params: Promise<{ id: string 
 
     return (
         <div className="p-6">
-            <h1 className="text-2xl font-bold mb-6">Season Insights</h1>
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">Season Insights</h1>
+                <a href="/dashboard" className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+                    Back to Dashboard
+                </a>
+            </div>
             <div className="grid grid-cols-3 gap-4">
                 <div>
                     <h4>Offensive KPI: {kpiMetrics.offensive.toFixed(2)}</h4>
