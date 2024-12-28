@@ -20,14 +20,18 @@ export default function DashboardClient() {
         async function fetchMatches() {
             try {
                 const response = await fetch("/api/football-matches");
-                const data = await response.json();
-                console.log(data);
+                const data: Match[] = await response.json(); // Ensure fetched data is typed as Match[]
+                console.log("Fetched Data:", data);
 
-                const last10Matches = data.slice(0, 10);
+                // Use the separate function to sort matches by date
+                const sortedData = sortMatchesByDateDescending(data);
+                console.log("Sorted Data:", sortedData);
+
+                const last10Matches = sortedData.slice(0, 10);
                 const avgMetrics = calculateAverageMetrics(last10Matches);
                 setAverageMetrics(avgMetrics);
 
-                setMatches(data);
+                setMatches(sortedData); // Set sorted data as matches
             } catch (error) {
                 console.error("Error fetching matches:", error);
             }
@@ -35,6 +39,20 @@ export default function DashboardClient() {
 
         fetchMatches();
     }, []);
+
+    // Helper method to sort matches by date 
+    function sortMatchesByDateDescending<T extends { date: string }>(data: T[]): T[] {
+        return data.sort((a, b) => {
+            const [dayA, monthA, yearA] = a.date.split("/").map(Number);
+            const [dayB, monthB, yearB] = b.date.split("/").map(Number);
+
+            // Subtract 1 from the month because the JavaScript Date object uses 0-based months
+            const dateA = new Date(yearA, monthA - 1, dayA);
+            const dateB = new Date(yearB, monthB - 1, dayB);
+
+            return dateB.getTime() - dateA.getTime(); // Latest date first
+        });
+    }
 
     useEffect(() => {
         if (selectedMetric && chartRef.current && selectedMatch === null) {
