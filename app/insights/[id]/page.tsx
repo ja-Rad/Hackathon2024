@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { SpiderChart } from "@/app/components/SpiderChart";
 import { MatchData } from "@/app/types/MatchData";
+import TooltipIcon from "@/app/components/TooltipIcon";
 
 export default function InsightsPage({ params }: Readonly<{ params: Promise<{ id: string }> }>) {
     const [matchMetrics, setMatchMetrics] = useState<{
@@ -110,22 +111,31 @@ export default function InsightsPage({ params }: Readonly<{ params: Promise<{ id
     return (
         <div className="p-6">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Season Insights</h1>
+                <h1 className="text-2xl font-bold">Match Insights</h1>
                 <a href="/dashboard" className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
                     Back to Dashboard
                 </a>
             </div>
             <div className="grid grid-cols-3 gap-4">
                 <div>
-                    <h4>Offensive KPI: {kpiMetrics.offensive.toFixed(2)}</h4>
+                    <h4 className="flex items-center">
+                        Seasonal Offensive CPI: {kpiMetrics.offensive.toFixed(2)}
+                        <TooltipIcon tooltipText="Focuses on Coventry's attacking performance: Scoring efficiency, chance creation, and attacking efficiency." />
+                    </h4>
                     <SpiderChart title="Offensive Performance" metrics={matchMetrics.offensive} seasonMetrics={seasonMetrics.offensive} />
                 </div>
                 <div>
-                    <h4>Defensive KPI: {kpiMetrics.defensive.toFixed(2)}</h4>
+                    <h4 className="flex items-center">
+                        Seasonal Defensive CPI: {kpiMetrics.defensive.toFixed(2)}
+                        <TooltipIcon tooltipText="Assesses Coventry's defensive stability: Defensive vulnerabilities, proactive actions, and limiting opponent chances." />
+                    </h4>
                     <SpiderChart title="Defensive Performance" metrics={matchMetrics.defensive} seasonMetrics={seasonMetrics.defensive} />
                 </div>
                 <div>
-                    <h4>General KPI: {kpiMetrics.general.toFixed(2)}</h4>
+                    <h4 className="flex items-center">
+                        Seasonal General CPI: {kpiMetrics.general.toFixed(2)}
+                        <TooltipIcon tooltipText="Combines offensive, defensive, and general metrics for an overall evaluation of team performance." />
+                    </h4>
                     <SpiderChart title="General Performance" metrics={matchMetrics.general} seasonMetrics={seasonMetrics.general} />
                 </div>
             </div>
