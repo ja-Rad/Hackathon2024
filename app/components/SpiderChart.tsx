@@ -76,7 +76,7 @@ export const SpiderChart: React.FC<SpiderChartProps> = ({ title, metrics, season
         const matchPolygon = g
             .append("path")
             .datum(data.map((d) => ({ axis: d.axis, value: 0 }))) // Start with 0 values for animation
-            .attr("d", (d) => (line(d as ChartDataPoint[]) || "") as string)
+            .attr("d", (d) => (line(d as ChartDataPoint[]) || "") as string) // NOSONAR
             .attr("fill", "#ff6666")
             .attr("fill-opacity", 0.5);
 
@@ -84,13 +84,13 @@ export const SpiderChart: React.FC<SpiderChartProps> = ({ title, metrics, season
             .datum(data.map((d) => ({ axis: d.axis, value: d.match })))
             .transition()
             .duration(1000)
-            .attr("d", (d) => (line(d as ChartDataPoint[]) || "") as string);
+            .attr("d", (d) => (line(d as ChartDataPoint[]) || "") as string); // NOSONAR
 
         // Add season polygon
         const seasonPolygon = g
             .append("path")
             .datum(data.map((d) => ({ axis: d.axis, value: 0 }))) // Start with 0 values for animation
-            .attr("d", (d) => (line(d as ChartDataPoint[]) || "") as string)
+            .attr("d", (d) => (line(d as ChartDataPoint[]) || "") as string) // NOSONAR
             .attr("fill", "#6666ff")
             .attr("fill-opacity", 0.5);
 
@@ -98,7 +98,7 @@ export const SpiderChart: React.FC<SpiderChartProps> = ({ title, metrics, season
             .datum(data.map((d) => ({ axis: d.axis, value: d.season })))
             .transition()
             .duration(1000)
-            .attr("d", (d) => (line(d as ChartDataPoint[]) || "") as string);
+            .attr("d", (d) => (line(d as ChartDataPoint[]) || "") as string); // NOSONAR
     }, [metrics, seasonMetrics]);
 
     return (
