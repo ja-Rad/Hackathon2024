@@ -22,7 +22,7 @@ export const renderBarChart = (container: HTMLElement, data: { value: number; la
 
     const y = d3
         .scaleLinear()
-        .domain([0, d3.max(data, (d) => d.value) || 0])
+        .domain([0, d3.max(data, (d) => d.value) ?? 0])
         .nice()
         .range([height, 0]);
 
@@ -38,7 +38,7 @@ export const renderBarChart = (container: HTMLElement, data: { value: number; la
         .enter()
         .append("rect")
         .attr("class", "bar")
-        .attr("x", (d) => x(d.label) || 0)
+        .attr("x", (d) => x(d.label) ?? 0)
         .attr("y", (d) => y(d.value))
         .attr("width", x.bandwidth())
         .attr("height", (d) => height - y(d.value))
@@ -57,7 +57,7 @@ export const renderBarChart = (container: HTMLElement, data: { value: number; la
         .enter()
         .append("text")
         .attr("class", "label")
-        .attr("x", (d) => (x(d.label) || 0) + x.bandwidth() / 2)
+        .attr("x", (d) => (x(d.label) ?? 0) + x.bandwidth() / 2)
         .attr("y", (d) => y(d.value) - 5)
         .attr("text-anchor", "middle")
         .text((d) => d.value.toFixed(2))

@@ -21,6 +21,7 @@ export default function DashboardClient() {
             try {
                 const response = await fetch("/api/football-matches");
                 const data = await response.json();
+                console.log(data);
 
                 const last10Matches = data.slice(0, 10);
                 const avgMetrics = calculateAverageMetrics(last10Matches);

@@ -1,5 +1,3 @@
-// components/MetricCategory.tsx
-
 import React, { RefObject } from "react";
 import { handleMouseDown } from "../utils/mouseInteraction";
 import { metricDescriptions } from "../utils/metrics";
