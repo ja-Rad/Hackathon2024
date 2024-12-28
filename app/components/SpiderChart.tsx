@@ -12,6 +12,11 @@ type SpiderChartProps = {
 export const SpiderChart: React.FC<SpiderChartProps> = ({ title, metrics, seasonMetrics }) => {
     const chartRef = useRef(null);
 
+    type ChartDataPoint = {
+        axis: string;
+        value: number;
+    };
+
     useEffect(() => {
         const data = Object.keys(metrics).map((key) => ({
             axis: key,
@@ -63,35 +68,37 @@ export const SpiderChart: React.FC<SpiderChartProps> = ({ title, metrics, season
 
         // Draw polygons with animation
         const line = d3
-            .lineRadial()
-            .radius((d: any) => radialScale(d.value))
-            .angle((d, i) => i * angleSlice);
+            .lineRadial<ChartDataPoint>() // Specify the type here
+            .radius((d) => radialScale(d.value)) // Use the type-safe `d.value`
+            .angle((_, i) => i * angleSlice);
 
+        // Add match polygon
         const matchPolygon = g
             .append("path")
-            .datum(data.map((d) => ({ ...d, value: 0 }))) // Start with 0 values for animation
-            .attr("d", (d) => (line(d as any) || "") as string)
+            .datum(data.map((d) => ({ axis: d.axis, value: 0 }))) // Start with 0 values for animation
+            .attr("d", (d) => (line(d as ChartDataPoint[]) || "") as string)
             .attr("fill", "#ff6666")
             .attr("fill-opacity", 0.5);
 
         matchPolygon
-            .datum(data.map((d) => ({ ...d, value: d.match })))
+            .datum(data.map((d) => ({ axis: d.axis, value: d.match })))
             .transition()
             .duration(1000)
-            .attr("d", (d) => (line(d as any) || "") as string);
+            .attr("d", (d) => (line(d as ChartDataPoint[]) || "") as string);
 
+        // Add season polygon
         const seasonPolygon = g
             .append("path")
-            .datum(data.map((d) => ({ ...d, value: 0 }))) // Start with 0 values for animation
-            .attr("d", (d) => (line(d as any) || "") as string)
+            .datum(data.map((d) => ({ axis: d.axis, value: 0 }))) // Start with 0 values for animation
+            .attr("d", (d) => (line(d as ChartDataPoint[]) || "") as string)
             .attr("fill", "#6666ff")
             .attr("fill-opacity", 0.5);
 
         seasonPolygon
-            .datum(data.map((d) => ({ ...d, value: d.season })))
+            .datum(data.map((d) => ({ axis: d.axis, value: d.season })))
             .transition()
             .duration(1000)
-            .attr("d", (d) => (line(d as any) || "") as string);
+            .attr("d", (d) => (line(d as ChartDataPoint[]) || "") as string);
     }, [metrics, seasonMetrics]);
 
     return (
