@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { SpiderChart } from "@/app/components/SpiderChart";
 import { MatchData } from "@/app/types/MatchData";
 
-export default function InsightsPage({ params }: { params: Promise<{ id: string }> }) {
+export default function InsightsPage({ params }: Readonly<{ params: Promise<{ id: string }> }>) {
     const [matchMetrics, setMatchMetrics] = useState<{
         offensive: { [key: string]: number };
         defensive: { [key: string]: number };
