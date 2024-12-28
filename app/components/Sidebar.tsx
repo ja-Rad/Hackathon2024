@@ -3,12 +3,12 @@ import * as d3 from "d3";
 import { Match } from "../types/Match";
 import { SidebarItem } from "./SidebarItem";
 
-type SidebarProps = {
+type SidebarProps = Readonly<{
     matches: Match[];
     selectedMatch: Match | null;
     setSelectedMatch: (match: Match | null) => void;
     chartRef: React.RefObject<HTMLDivElement | null>; // Allow nullable ref
-};
+}>;
 
 export function Sidebar({ matches, selectedMatch, setSelectedMatch, chartRef }: SidebarProps) {
     return (
@@ -21,7 +21,7 @@ export function Sidebar({ matches, selectedMatch, setSelectedMatch, chartRef }: 
                     onClick={() => {
                         setSelectedMatch(match);
                         if (chartRef?.current) {
-                            // Handle nullable chartRef
+                            // Remove d3 plot when selecting different match item besides Most Recent Matches
                             d3.select(chartRef.current).selectAll("svg").remove();
                         }
                     }}
