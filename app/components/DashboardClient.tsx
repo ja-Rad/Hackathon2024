@@ -1,21 +1,20 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { renderBarChart } from "../utils/barChart";
-
-import * as d3 from "d3";
+import React, { useState, useEffect, useRef } from "react";
+import { Sidebar } from "./Sidebar";
 import { MatchDetails } from "./MatchDetails";
 import { AverageMetricsChart } from "./AverageMetricsChart";
 import { calculateAverageMetrics } from "../utils/metrics";
+import { renderBarChart } from "../utils/barChart";
 import { Match } from "../types/Match";
 
 export default function DashboardClient() {
     const [matches, setMatches] = useState<Match[]>([]);
     const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
     const [averageMetrics, setAverageMetrics] = useState<Match["metrics"] | null>(null);
-    const [selectedMetric, setSelectedMetric] = useState<string | null>(null); // Track the selected metric for the bar chart
-    const chartRef = useRef<HTMLDivElement | null>(null); // Ref for D3.js chart container
-    const metricsRef = useRef<HTMLDivElement | null>(null); // Ref for draggable metric container
+    const [selectedMetric, setSelectedMetric] = useState<string | null>(null);
+    const chartRef = useRef<HTMLDivElement | null>(null);
+    const metricsRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         async function fetchMatches() {
@@ -48,32 +47,20 @@ export default function DashboardClient() {
         }
     }, [selectedMetric, selectedMatch, matches]);
 
+    const renderMainContent = () => {
+        if (selectedMatch) {
+            return <MatchDetails match={selectedMatch} metricsRef={metricsRef as React.RefObject<HTMLDivElement>} setSelectedMetric={setSelectedMetric} />;
+        } else if (averageMetrics) {
+            return <AverageMetricsChart averageMetrics={averageMetrics} metricsRef={metricsRef as React.RefObject<HTMLDivElement>} setSelectedMetric={setSelectedMetric} chartRef={chartRef as React.RefObject<HTMLDivElement>} />;
+        } else {
+            return <div className="text-gray-400 text-center">Select a match to see details.</div>;
+        }
+    };
+
     return (
         <div className="flex h-screen bg-gray-900 text-gray-100">
-            <aside className="w-1/4 bg-gray-800 overflow-y-auto border-r border-gray-700">
-                <div className={`p-4 cursor-pointer hover:bg-gray-700 ${selectedMatch === null ? "bg-gray-700" : ""}`} onClick={() => setSelectedMatch(null)}>
-                    <h2 className="font-bold text-gray-200">Most Recent Matches</h2>
-                    <p className="text-sm text-gray-400">Averages from the last 10 matches</p>
-                </div>
-                {matches.map((match) => (
-                    <div
-                        key={match.id}
-                        className={`p-4 cursor-pointer hover:bg-gray-700 ${selectedMatch?.id === match.id ? "bg-gray-700" : ""}`}
-                        onClick={() => {
-                            setSelectedMatch(match);
-                            if (chartRef.current) {
-                                d3.select(chartRef.current).selectAll("svg").remove();
-                            }
-                        }}
-                    >
-                        <h3 className="font-bold text-gray-200">
-                            {match.homeTeam} vs {match.awayTeam}
-                        </h3>
-                        <p className="text-sm text-gray-400">{match.date}</p>
-                    </div>
-                ))}
-            </aside>
-            <main className="w-3/4 p-4">{selectedMatch ? <MatchDetails match={selectedMatch} metricsRef={metricsRef as React.RefObject<HTMLDivElement>} setSelectedMetric={setSelectedMetric} /> : averageMetrics ? <AverageMetricsChart averageMetrics={averageMetrics} metricsRef={metricsRef as React.RefObject<HTMLDivElement>} setSelectedMetric={setSelectedMetric} chartRef={chartRef as React.RefObject<HTMLDivElement>} /> : <div className="text-gray-400 text-center">Select a match to see details.</div>}</main>{" "}
+            <Sidebar matches={matches} selectedMatch={selectedMatch} setSelectedMatch={setSelectedMatch} chartRef={chartRef} />
+            <main className="w-3/4 p-4">{renderMainContent()}</main>
         </div>
     );
 }
