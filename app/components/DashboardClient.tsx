@@ -21,11 +21,9 @@ export default function DashboardClient() {
             try {
                 const response = await fetch("/api/football-matches");
                 const data: Match[] = await response.json(); // Ensure fetched data is typed as Match[]
-                console.log("Fetched Data:", data);
 
                 // Use the separate function to sort matches by date
                 const sortedData = sortMatchesByDateDescending(data);
-                console.log("Sorted Data:", sortedData);
 
                 const last10Matches = sortedData.slice(0, 10);
                 const avgMetrics = calculateAverageMetrics(last10Matches);

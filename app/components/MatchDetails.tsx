@@ -21,6 +21,10 @@ export function MatchDetails({ match, metricsRef, setSelectedMetric }: MatchDeta
                 <p>
                     Date: <span className="text-gray-300">{match.date}</span>
                 </p>
+                {/* Existing Match Details UI */}
+                <a href={`/insights/${match.id}`} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 inline-block">
+                    Season Insights
+                </a>
             </div>
             <MetricCategory
                 title="General"

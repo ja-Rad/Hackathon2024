@@ -1,3 +1,5 @@
+import { MatchData } from "../types/MatchData";
+
 export const metricDescriptions = {
     shotsOnTarget: "Number of shots on target during the match.",
     possession: "Percentage of possession held by the team.",
@@ -39,4 +41,44 @@ export const calculateAverageMetrics = <T extends Record<string, number | string
     });
 
     return averages as T; // Ensure type compatibility
+};
+
+export const calculateMatchMetrics = (matchData: MatchData) => {
+    const offensiveCPI = 3 * parseFloat(matchData.goals_scored || "0") + 2 * parseFloat(matchData.np_xg || "0") + 1.5 * parseFloat(matchData.shots_on_target || "0") + 1.2 * parseFloat(matchData.completed_passes_into_the_box || "0") + 1 * parseFloat(matchData.xg_within_8_seconds_of_corner || "0");
+
+    const defensiveCPI = -2 * parseFloat(matchData.goals_conceded || "0") - 1.5 * parseFloat(matchData.np_xg_conceded || "0") + 1.2 * parseFloat(matchData.tackles || "0") + 1.2 * parseFloat(matchData.pressure_regains || "0") - 1 * parseFloat(matchData.opposition_shots || "0");
+
+    const generalCPI = 2 * parseFloat(matchData.goals_scored || "0") + 1.5 * parseFloat(matchData.np_xg || "0") - 1.5 * parseFloat(matchData.goals_conceded || "0") - 1.2 * parseFloat(matchData.np_xg_conceded || "0") + 0.8 * parseFloat(matchData.possession || "0") + 0.5 * parseFloat(matchData.ppda || "0") + 1 * parseFloat(matchData.final_third_possession || "0");
+
+    return {
+        offensive: offensiveCPI,
+        defensive: defensiveCPI,
+        general: generalCPI,
+    };
+};
+
+export const calculateDetailedMetrics = (matchData: MatchData) => {
+    return {
+        offensive: {
+            goals_scored: parseFloat(matchData.goals_scored || "0"),
+            np_xg: parseFloat(matchData.np_xg || "0"),
+            shots_on_target: parseFloat(matchData.shots_on_target || "0"),
+            completed_passes_into_the_box: parseFloat(matchData.completed_passes_into_the_box || "0"),
+            xg_within_8_seconds_of_corner: parseFloat(matchData.xg_within_8_seconds_of_corner || "0"),
+        },
+        defensive: {
+            goals_conceded: parseFloat(matchData.goals_conceded || "0"),
+            np_xg_conceded: parseFloat(matchData.np_xg_conceded || "0"),
+            tackles: parseFloat(matchData.tackles || "0"),
+            pressure_regains: parseFloat(matchData.pressure_regains || "0"),
+            opposition_shots: parseFloat(matchData.opposition_shots || "0"),
+        },
+        general: {
+            goals_scored: parseFloat(matchData.goals_scored || "0"),
+            possession: parseFloat(matchData.possession || "0"),
+            ppda: parseFloat(matchData.ppda || "0"),
+            final_third_possession: parseFloat(matchData.final_third_possession || "0"),
+            completed_passes_into_the_box: parseFloat(matchData.completed_passes_into_the_box || "0"),
+        },
+    };
 };
