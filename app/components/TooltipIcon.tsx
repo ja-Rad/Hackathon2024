@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function TooltipIcon({ tooltipText }: { tooltipText: string }) {
+export default function TooltipIcon({ tooltipText }: Readonly<{ tooltipText: string }>) {
     const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number } | null>(null);
 
     const handleMouseMove = (event: React.MouseEvent) => {
@@ -31,5 +31,3 @@ function TooltipIcon({ tooltipText }: { tooltipText: string }) {
         </span>
     );
 }
-
-export default TooltipIcon;
