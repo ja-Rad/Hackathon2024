@@ -6,7 +6,7 @@ import { MatchDetails } from "./MatchDetails";
 import { AverageMetricsChart } from "./AverageMetricsChart";
 import { calculateAverageMetrics } from "../utils/metrics";
 import { renderBarChart } from "../utils/barChart";
-import { Match } from "../types/Match";
+import { Match } from "../types/match";
 
 export default function DashboardClient() {
     const [matches, setMatches] = useState<Match[]>([]);

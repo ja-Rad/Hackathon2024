@@ -1,6 +1,6 @@
 import React from "react";
 import { MetricCategory } from "./MetricCategory";
-import { Match } from "../types/Match";
+import { Match } from "../types/match";
 
 type AverageMetricsChartProps = Readonly<{
     averageMetrics: Match["metrics"];

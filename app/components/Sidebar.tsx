@@ -1,6 +1,6 @@
 import React from "react";
 import * as d3 from "d3";
-import { Match } from "../types/Match";
+import { Match } from "../types/match";
 import { SidebarItem } from "./SidebarItem";
 
 type SidebarProps = Readonly<{
