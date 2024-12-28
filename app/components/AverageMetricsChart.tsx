@@ -12,7 +12,7 @@ type AverageMetricsChartProps = Readonly<{
 export function AverageMetricsChart({ averageMetrics, metricsRef, setSelectedMetric, chartRef }: AverageMetricsChartProps) {
     return (
         <>
-            <MetricCategory title="Recent matches metrics" metrics={averageMetrics} metricsRef={metricsRef} onSelectMetric={setSelectedMetric} />
+            <MetricCategory title="Average metrics from the last 10 matches" metrics={averageMetrics} metricsRef={metricsRef} onSelectMetric={setSelectedMetric} />
             <div ref={chartRef} className="mt-6"></div>
         </>
     );

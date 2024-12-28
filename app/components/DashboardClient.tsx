@@ -40,7 +40,7 @@ export default function DashboardClient() {
         fetchMatches();
     }, []);
 
-    // Helper method to sort matches by date 
+    // Helper method to sort matches by date
     function sortMatchesByDateDescending<T extends { date: string }>(data: T[]): T[] {
         return data.sort((a, b) => {
             const [dayA, monthA, yearA] = a.date.split("/").map(Number);
@@ -62,7 +62,7 @@ export default function DashboardClient() {
                 label: match.date,
             }));
 
-            renderBarChart(chartRef.current, data);
+            renderBarChart(chartRef.current, data, selectedMetric.replace(/([A-Z])/g, " $1")); // Pass a human-readable metric label
         }
     }, [selectedMetric, selectedMatch, matches]);
 

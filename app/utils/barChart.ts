@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 
-export const renderBarChart = (container: HTMLElement, data: { value: number; label: string }[]): void => {
+export const renderBarChart = (container: HTMLElement, data: { value: number; label: string }[], metricLabel: string): void => {
     const width = 500;
     const height = 300;
     const margin = { top: 20, right: 30, bottom: 40, left: 50 };
@@ -13,6 +13,15 @@ export const renderBarChart = (container: HTMLElement, data: { value: number; la
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", -margin.top / 2) // Adjust the y-position to avoid overlap
+        .attr("text-anchor", "middle")
+        .attr("font-size", "16px")
+        .attr("fill", "#fff")
+        .style("dominant-baseline", "middle")
+        .text(metricLabel);
 
     const x = d3
         .scaleBand()
@@ -32,34 +41,39 @@ export const renderBarChart = (container: HTMLElement, data: { value: number; la
     // Y-axis
     svg.append("g").call(d3.axisLeft(y));
 
-    // Bars
+    // Bars with animation
     svg.selectAll(".bar")
         .data(data)
         .enter()
         .append("rect")
         .attr("class", "bar")
         .attr("x", (d) => x(d.label) ?? 0)
-        .attr("y", (d) => y(d.value))
         .attr("width", x.bandwidth())
-        .attr("height", (d) => height - y(d.value))
+        .attr("y", height) // Start at the bottom of the chart
+        .attr("height", 0) // Start with a height of 0
         .attr("fill", "#4F46E5")
         .attr("opacity", 0.8)
-        .on("mouseover", function () {
-            d3.select(this).attr("opacity", 1);
-        })
-        .on("mouseout", function () {
-            d3.select(this).attr("opacity", 0.8);
-        });
+        .transition() // Add transition for animation
+        .delay((_, i) => i * 100) // Delay each bar based on its index
+        .duration(800) // Duration of the animation
+        .attr("y", (d) => y(d.value)) // Final y position
+        .attr("height", (d) => height - y(d.value)); // Final height
 
-    // Labels
+    // Labels with animation
     svg.selectAll(".label")
         .data(data)
         .enter()
         .append("text")
         .attr("class", "label")
         .attr("x", (d) => (x(d.label) ?? 0) + x.bandwidth() / 2)
-        .attr("y", (d) => y(d.value) - 5)
+        .attr("y", height) // Start at the bottom of the chart
         .attr("text-anchor", "middle")
+        .attr("opacity", 0) // Start with invisible labels
+        .transition() // Add transition for animation
+        .delay((_, i) => i * 100) // Delay each label based on its index
+        .duration(800) // Duration of the animation
+        .attr("y", (d) => y(d.value) - 5) // Final y position
+        .attr("opacity", 1) // Fade in
         .text((d) => d.value.toFixed(2))
         .attr("fill", "#fff");
 };
