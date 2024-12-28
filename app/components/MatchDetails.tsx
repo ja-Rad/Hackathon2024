@@ -2,11 +2,11 @@ import React from "react";
 import { MetricCategory } from "./MetricCategory";
 import { Match } from "../types/Match";
 
-type MatchDetailsProps = {
+type MatchDetailsProps = Readonly<{
     match: Match;
     metricsRef: React.RefObject<HTMLDivElement>;
     setSelectedMetric: React.Dispatch<React.SetStateAction<string | null>>;
-};
+}>;
 
 export function MatchDetails({ match, metricsRef, setSelectedMetric }: MatchDetailsProps) {
     return (
