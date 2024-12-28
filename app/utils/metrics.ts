@@ -1,3 +1,4 @@
+import { Match } from "../types/match";
 import { MatchData } from "../types/MatchData";
 
 export const metricDescriptions = {
@@ -81,4 +82,31 @@ export const calculateDetailedMetrics = (matchData: MatchData) => {
             completed_passes_into_the_box: parseFloat(matchData.completed_passes_into_the_box || "0"),
         },
     };
+};
+
+// Function to calculate CPI
+export const calculateCPI = (match: Match): number | "N/A" => {
+    const metrics = match.metrics || {};
+
+    const goalsScored = parseFloat((metrics["goals_scored"] as string) || "0");
+    const goalsConceded = parseFloat((metrics["goals_conceded"] as string) || "0");
+    const np_xg = parseFloat((metrics["np_xg"] as string) || "0");
+    const np_xg_conceded = parseFloat((metrics["np_xg_conceded"] as string) || "0");
+    const possession = parseFloat((metrics["possession"] as string) || "0");
+    const hsr = parseFloat((metrics["hsr"] as string) || "0");
+
+    const cpi = 2 * goalsScored + 1.5 * np_xg - 1.5 * goalsConceded - 1.2 * np_xg_conceded + 0.8 * possession + 0.5 * hsr;
+
+    return isNaN(cpi) ? "N/A" : cpi;
+};
+
+// Function to evaluate CPI performance
+export const evaluateCPI = (cpi: number): string => {
+    if (cpi < 3255) {
+        return "Bad";
+    } else if (cpi >= 3255 && cpi <= 3855) {
+        return "Average";
+    } else {
+        return "Good";
+    }
 };
