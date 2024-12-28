@@ -26,3 +26,17 @@ export const metricDescriptions = {
     monteCarloDrawProb: "Monte Carlo simulation probability of drawing.",
     monteCarloLossProb: "Monte Carlo simulation probability of losing.",
 };
+
+export const calculateAverageMetrics = <T extends Record<string, number | string>>(matches: { metrics: T }[]): T => {
+    if (matches.length === 0) return {} as T;
+
+    const keys = Object.keys(matches[0].metrics) as (keyof T)[];
+    const averages = {} as Record<keyof T, number>;
+
+    keys.forEach((key) => {
+        const sum = matches.reduce((acc, match) => acc + (parseFloat(match.metrics[key] as string) || 0), 0);
+        averages[key] = parseFloat((sum / matches.length).toFixed(2));
+    });
+
+    return averages as T; // Ensure type compatibility
+};
