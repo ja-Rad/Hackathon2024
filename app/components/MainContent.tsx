@@ -11,12 +11,22 @@ interface MainContentProps {
     setSelectedMetric: React.Dispatch<React.SetStateAction<string | null>>;
     matches: Match[];
     setAiAdvice: React.Dispatch<React.SetStateAction<string | null>>;
-    generateAiAdvice: (matches: Match[], setAiAdvice: React.Dispatch<React.SetStateAction<string | null>>) => void;
+    generateAiAdvice: () => void;
     aiAdvice: string | null;
+    isAdviceLoading: boolean; // Add loading state prop
 }
 
-const MainContent: React.FC<MainContentProps> = ({ selectedMatch, averageMetrics, metricsRef, chartRef, setSelectedMetric, matches, setAiAdvice, generateAiAdvice, aiAdvice }) => {
+const MainContent: React.FC<MainContentProps> = ({ selectedMatch, averageMetrics, metricsRef, chartRef, setSelectedMetric, matches, setAiAdvice, generateAiAdvice, aiAdvice, isAdviceLoading }) => {
     const renderAdvice = (advice: string | null) => {
+        if (isAdviceLoading) {
+            return (
+                <div className="flex items-center justify-center">
+                    <div className="w-8 h-8 border-4 border-blue-500 border-dotted rounded-full animate-spin"></div>
+                    <p className="ml-2 text-gray-400">Generating advice...</p>
+                </div>
+            );
+        }
+
         if (!advice) {
             return <p className="text-gray-400">Click &quot;Generate Advice&quot; to see AI-driven performance insights.</p>;
         }
@@ -49,8 +59,12 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMatch, averageMetrics
                 {/* AI Advice Panel */}
                 <div className="p-4 bg-gray-800 text-white mt-4">
                     <h2 className="text-lg font-bold mb-4">AI Performance Advice</h2>
-                    <button className="px-4 py-2 bg-blue-500 rounded hover:bg-blue-600 transition-all" onClick={() => generateAiAdvice(matches, setAiAdvice)}>
-                        Generate Advice
+                    <button
+                        className="px-4 py-2 bg-blue-500 rounded hover:bg-blue-600 transition-all"
+                        onClick={generateAiAdvice}
+                        disabled={isAdviceLoading} // Disable button while loading
+                    >
+                        {isAdviceLoading ? "Loading..." : "Generate Advice"}
                     </button>
                     <div className="mt-4">{renderAdvice(aiAdvice)}</div>
                 </div>

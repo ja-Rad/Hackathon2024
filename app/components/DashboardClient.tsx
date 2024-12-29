@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { Sidebar } from "./Sidebar";
+import MainContent from "./MainContent";
 import { renderBarChart } from "../utils/barChart";
 import { generateAiAdvice } from "../utils/generateAiAdvice";
 import { fetchMatchesData } from "../lib/dashboardHandler";
 import { Match } from "../types/match";
-import MainContent from "./MainContent";
 
 export default function DashboardClient() {
     const [matches, setMatches] = useState<Match[]>([]);
@@ -15,6 +15,7 @@ export default function DashboardClient() {
     const [selectedMetric, setSelectedMetric] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [aiAdvice, setAiAdvice] = useState<string | null>(null);
+    const [isAdviceLoading, setIsAdviceLoading] = useState(false); // Loading state for advice
     const chartRef = useRef<HTMLDivElement>(null);
     const metricsRef = useRef<HTMLDivElement>(null);
 
@@ -36,6 +37,13 @@ export default function DashboardClient() {
         }
     }, [selectedMetric, selectedMatch, matches]);
 
+    // Function to generate advice with loading state
+    const handleGenerateAdvice = async () => {
+        setIsAdviceLoading(true);
+        await generateAiAdvice(matches, setAiAdvice);
+        setIsAdviceLoading(false);
+    };
+
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-screen bg-gray-900">
@@ -51,7 +59,18 @@ export default function DashboardClient() {
         <div className="flex h-screen bg-gray-900 text-gray-100">
             <Sidebar matches={matches} selectedMatch={selectedMatch} setSelectedMatch={setSelectedMatch} chartRef={chartRef} />
             <main className="w-3/4 p-4">
-                <MainContent selectedMatch={selectedMatch} averageMetrics={averageMetrics} metricsRef={metricsRef} chartRef={chartRef} setSelectedMetric={setSelectedMetric} matches={matches} setAiAdvice={setAiAdvice} generateAiAdvice={generateAiAdvice} aiAdvice={aiAdvice} />
+                <MainContent
+                    selectedMatch={selectedMatch}
+                    averageMetrics={averageMetrics}
+                    metricsRef={metricsRef}
+                    chartRef={chartRef}
+                    setSelectedMetric={setSelectedMetric}
+                    matches={matches}
+                    setAiAdvice={setAiAdvice}
+                    generateAiAdvice={handleGenerateAdvice}
+                    aiAdvice={aiAdvice}
+                    isAdviceLoading={isAdviceLoading} // Pass loading state
+                />
             </main>
         </div>
     );
