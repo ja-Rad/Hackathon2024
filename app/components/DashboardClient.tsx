@@ -14,6 +14,7 @@ export default function DashboardClient() {
     const [averageMetrics, setAverageMetrics] = useState<Match["metrics"] | null>(null);
     const [selectedMetric, setSelectedMetric] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true); // State to track loading
+    const [aiAdvice, setAiAdvice] = useState<string | null>(null); // State to store AI advice
     const chartRef = useRef<HTMLDivElement | null>(null);
     const metricsRef = useRef<HTMLDivElement | null>(null);
 
@@ -21,28 +22,25 @@ export default function DashboardClient() {
         async function fetchMatches() {
             try {
                 const response = await fetch("/api/football-matches");
-                const data: Match[] = await response.json(); // Ensure fetched data is typed as Match[]
+                const data: Match[] = await response.json();
 
-                // Use the separate function to sort matches by date
                 const sortedData = sortMatchesByDateDescending(data);
-
                 const last10Matches = sortedData.slice(0, 10);
                 const avgMetrics = calculateAverageMetrics(last10Matches);
                 setAverageMetrics(avgMetrics);
 
-                setMatches(sortedData); // Set sorted data as matches
+                setMatches(sortedData);
             } catch (error) {
                 console.error("Error fetching matches:", error);
             } finally {
-                setIsLoading(false); // Set loading to false when fetching is done
+                setIsLoading(false);
             }
         }
 
         fetchMatches();
     }, []);
 
-    // Helper method to sort matches by date
-    function sortMatchesByDateDescending<T extends { date: string }>(data: T[]): T[] {
+    const sortMatchesByDateDescending = <T extends { date: string }>(data: T[]): T[] => {
         return data.sort((a, b) => {
             const [dayA, monthA, yearA] = a.date.split("/").map(Number);
             const [dayB, monthB, yearB] = b.date.split("/").map(Number);
@@ -50,9 +48,9 @@ export default function DashboardClient() {
             const dateA = new Date(yearA, monthA - 1, dayA);
             const dateB = new Date(yearB, monthB - 1, dayB);
 
-            return dateB.getTime() - dateA.getTime(); // Latest date first
+            return dateB.getTime() - dateA.getTime();
         });
-    }
+    };
 
     useEffect(() => {
         if (selectedMetric && chartRef.current && selectedMatch === null) {
@@ -66,11 +64,42 @@ export default function DashboardClient() {
         }
     }, [selectedMetric, selectedMatch, matches]);
 
+    const generateAiAdvice = async () => {
+        try {
+            const last10Metrics = matches.slice(0, 10).map((match) => match.metrics);
+            const response = await fetch("/api/generate-advice", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ metrics: last10Metrics }),
+            });
+            const data = await response.json();
+            setAiAdvice(data.advice);
+        } catch (error) {
+            console.error("Error generating AI advice:", error);
+            setAiAdvice("Failed to generate advice. Please try again.");
+        }
+    };
+
     const renderMainContent = () => {
         if (selectedMatch) {
             return <MatchDetails match={selectedMatch} metricsRef={metricsRef as React.RefObject<HTMLDivElement>} setSelectedMetric={setSelectedMetric} />;
         } else if (averageMetrics) {
-            return <AverageMetricsChart averageMetrics={averageMetrics} metricsRef={metricsRef as React.RefObject<HTMLDivElement>} setSelectedMetric={setSelectedMetric} chartRef={chartRef as React.RefObject<HTMLDivElement>} />;
+            return (
+                <div className="flex flex-col w-full">
+                    <div>
+                        <AverageMetricsChart averageMetrics={averageMetrics} metricsRef={metricsRef as React.RefObject<HTMLDivElement>} setSelectedMetric={setSelectedMetric} chartRef={chartRef as React.RefObject<HTMLDivElement>} />
+                    </div>
+
+                    {/* AI Advice Panel */}
+                    <div className="p-4 bg-gray-800 text-white mt-4">
+                        <h2 className="text-lg font-bold mb-4">AI Performance Advice</h2>
+                        <button className="px-4 py-2 bg-blue-500 rounded hover:bg-blue-600 transition-all" onClick={generateAiAdvice}>
+                            Generate Advice
+                        </button>
+                        {aiAdvice && <p className="mt-4 text-sm">{aiAdvice}</p>}
+                    </div>
+                </div>
+            );
         } else {
             return <div className="text-gray-400 text-center">Select a match to see details.</div>;
         }
