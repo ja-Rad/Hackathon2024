@@ -1,5 +1,5 @@
 import { Match } from "../types/match";
-import { MatchData } from "../types/MatchData";
+import { MatchData } from "../types/matchData";
 
 export const metricDescriptions = {
     shotsOnTarget: "Number of shots on target during the match.",
