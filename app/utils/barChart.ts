@@ -12,11 +12,11 @@ export const renderBarChart = (container: HTMLElement, data: { value: number; la
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
+        .attr("transform", `translate(${margin.left},${margin.top * 3})`);
 
     svg.append("text")
         .attr("x", width / 2)
-        .attr("y", -margin.top / 2) // Adjust the y-position to avoid overlap
+        .attr("y", -margin.top * 2) // Adjust the y-position to avoid overlap
         .attr("text-anchor", "middle")
         .attr("font-size", "16px")
         .attr("fill", "#fff")

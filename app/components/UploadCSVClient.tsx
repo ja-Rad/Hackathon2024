@@ -7,6 +7,7 @@ export default function UploadCSVClient() {
     const [csvFile, setCsvFile] = useState<File | null>(null);
     const [statusMessage, setStatusMessage] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false); // Loading state
+    const [redirectReady, setRedirectReady] = useState<boolean>(false); // Ready to redirect
 
     const handleFileSelection = (event: ChangeEvent<HTMLInputElement>): void => {
         const file = event.target.files?.[0];
@@ -40,6 +41,7 @@ export default function UploadCSVClient() {
             await uploadDataToDatabase(csvData);
 
             setStatusMessage(`Success: File "${csvFile.name}" uploaded successfully.`);
+            setRedirectReady(true); // Show redirect button
         } catch (error) {
             setStatusMessage(`Error: ${(error as Error).message}`);
         } finally {
@@ -52,6 +54,7 @@ export default function UploadCSVClient() {
         try {
             await handleTestDataUpload();
             setStatusMessage("Success: Test CSV data loaded.");
+            setRedirectReady(true); // Show redirect button
         } catch (error) {
             setStatusMessage(`Error: ${(error as Error).message}`);
         } finally {
@@ -91,6 +94,14 @@ export default function UploadCSVClient() {
                 </button>
 
                 {statusMessage && <div className="mt-3 text-sm text-gray-800 dark:text-gray-200">{statusMessage}</div>}
+
+                {redirectReady && (
+                    <div className="mt-6">
+                        <a href="/dashboard" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-all">
+                            Go to Dashboard
+                        </a>
+                    </div>
+                )}
             </div>
         </div>
     );
