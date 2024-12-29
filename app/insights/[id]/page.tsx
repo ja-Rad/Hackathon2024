@@ -6,10 +6,16 @@ import { ChartSection } from "@/app/components/ChartSection";
 import { fetchMatchData, fetchSeasonMetrics } from "@/app/lib/insightsHandlers";
 import { mapMatchMetrics, mapSeasonMetrics, mapKpiMetrics } from "@/app/lib/metricsMapper";
 import { determineSeason } from "@/app/utils/dateUtils";
+import { calculateMatchMetrics } from "@/app/utils/metrics";
 
 export default function InsightsPage({ params }: Readonly<{ params: Promise<{ id: string }> }>) {
     const { matchMetrics, setMatchMetrics, seasonMetrics, setSeasonMetrics, kpiMetrics, setKpiMetrics } = useMetrics();
-    const [matchDetails, setMatchDetails] = useState<{ enemyTeam: string; date: string; season: string } | null>(null);
+    const [matchDetails, setMatchDetails] = useState<{
+        enemyTeam: string;
+        date: string;
+        season: string;
+        kpiMatch: { offensive: number; defensive: number; general: number };
+    } | null>(null);
 
     useEffect(() => {
         async function fetchMetrics() {
@@ -20,12 +26,16 @@ export default function InsightsPage({ params }: Readonly<{ params: Promise<{ id
                 const matchData = await fetchMatchData(id);
                 setMatchMetrics(mapMatchMetrics(matchData));
 
+                // Calculate match-specific KPIs
+                const kpiMatch = calculateMatchMetrics(matchData);
+
                 // Determine the season
                 const season = determineSeason(matchData.date);
                 setMatchDetails({
                     enemyTeam: matchData.Opposition,
                     date: matchData.date,
                     season,
+                    kpiMatch,
                 });
 
                 // Fetch season metrics and set metrics
@@ -56,9 +66,9 @@ export default function InsightsPage({ params }: Readonly<{ params: Promise<{ id
                 </a>
             </div>
             <div className="grid grid-cols-3 gap-4">
-                <ChartSection title="Offensive CPI" kpiValue={kpiMetrics.offensive} tooltipText="Focuses on Coventry's attacking performance: Scoring efficiency, chance creation, and attacking efficiency." matchMetrics={matchMetrics.offensive} seasonMetrics={seasonMetrics.offensive} />
-                <ChartSection title="Defensive CPI" kpiValue={kpiMetrics.defensive} tooltipText="Assesses Coventry's defensive stability: Defensive vulnerabilities, proactive actions, and limiting opponent chances." matchMetrics={matchMetrics.defensive} seasonMetrics={seasonMetrics.defensive} />
-                <ChartSection title="General CPI" kpiValue={kpiMetrics.general} tooltipText="Combines offensive, defensive, and general metrics for an overall evaluation of team performance." matchMetrics={matchMetrics.general} seasonMetrics={seasonMetrics.general} />
+                <ChartSection title="Offensive CPI" matchKpiValue={matchDetails.kpiMatch.offensive} seasonKpiValue={kpiMetrics.offensive} tooltipText="Focuses on Coventry's attacking performance: Scoring efficiency, chance creation, and attacking efficiency." matchMetrics={matchMetrics.offensive} seasonMetrics={seasonMetrics.offensive} />
+                <ChartSection title="Defensive CPI" matchKpiValue={matchDetails.kpiMatch.defensive} seasonKpiValue={kpiMetrics.defensive} tooltipText="Assesses Coventry's defensive stability: Defensive vulnerabilities, proactive actions, and limiting opponent chances." matchMetrics={matchMetrics.defensive} seasonMetrics={seasonMetrics.defensive} />
+                <ChartSection title="General CPI" matchKpiValue={matchDetails.kpiMatch.general} seasonKpiValue={kpiMetrics.general} tooltipText="Combines offensive, defensive, and general metrics for an overall evaluation of team performance." matchMetrics={matchMetrics.general} seasonMetrics={seasonMetrics.general} />
             </div>
         </div>
     );

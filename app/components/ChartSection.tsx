@@ -4,17 +4,18 @@ import TooltipIcon from "@/app/components/TooltipIcon";
 
 type ChartSectionProps = {
     title: string;
-    kpiValue: number;
+    matchKpiValue: number;
+    seasonKpiValue: number;
     tooltipText: string;
     matchMetrics: { [key: string]: number };
     seasonMetrics: { [key: string]: number };
 };
 
-export const ChartSection: React.FC<ChartSectionProps> = ({ title, kpiValue, tooltipText, matchMetrics, seasonMetrics }) => {
+export const ChartSection: React.FC<ChartSectionProps> = ({ title, matchKpiValue, seasonKpiValue, tooltipText, matchMetrics, seasonMetrics }) => {
     return (
         <div>
             <h4 className="flex items-center">
-                {title}: {kpiValue.toFixed(2)}
+                {title}: Match {matchKpiValue.toFixed(2)} | Season Avg {seasonKpiValue.toFixed(2)}
                 <TooltipIcon tooltipText={tooltipText} />
             </h4>
             <SpiderChart title={`${title} Performance`} metrics={matchMetrics} seasonMetrics={seasonMetrics} />
