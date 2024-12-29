@@ -13,8 +13,8 @@ export default function DashboardClient() {
     const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
     const [averageMetrics, setAverageMetrics] = useState<Match["metrics"] | null>(null);
     const [selectedMetric, setSelectedMetric] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true); // State to track loading
-    const [aiAdvice, setAiAdvice] = useState<string | null>(null); // State to store AI advice
+    const [isLoading, setIsLoading] = useState(true);
+    const [aiAdvice, setAiAdvice] = useState<string | null>(null);
     const chartRef = useRef<HTMLDivElement | null>(null);
     const metricsRef = useRef<HTMLDivElement | null>(null);
 
@@ -68,26 +68,54 @@ export default function DashboardClient() {
         try {
             const last10Metrics = matches.slice(0, 10).map((match) => match.metrics);
 
-            // Create a descriptive prompt for the AI request
             const aiRequestPrompt = `
-            Based on the following performance metrics from the last 10 matches of Coventry City FC:
-            ${JSON.stringify(last10Metrics, null, 2)}
-            
-            Provide simple and straightforward advice for improving the team's performance. Focus on actionable and concise insights for both offensive and defensive strategies, along with overall team improvement.
-        `;
+                Based on the following performance metrics from the last 10 matches of Coventry City FC:
+                ${JSON.stringify(last10Metrics, null, 2)}
 
-            const response = await fetch("/api/generate-advice", {
+                Provide actionable insights to improve performance in 5 sentences (maximum 100 words).
+            `;
+
+            const response = await fetch("/api/generate-ai-advice", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ prompt: aiRequestPrompt }),
             });
 
+            if (!response.ok) {
+                throw new Error("Failed to fetch advice.");
+            }
+
             const data = await response.json();
+
+            if (!data || !data.advice) {
+                throw new Error("Invalid response format.");
+            }
+
             setAiAdvice(data.advice);
         } catch (error) {
             console.error("Error generating AI advice:", error);
             setAiAdvice("Failed to generate advice. Please try again.");
         }
+    };
+
+    const renderAdvice = (advice: string | null) => {
+        if (!advice) {
+            return <p className="text-gray-400">Click &quot;Generate Advice&quot; to see AI-driven performance insights.</p>;
+        }
+
+        // Split advice into sections
+        const sections = advice.split("\n\n").map((section, index) => {
+            const isHeading = section.startsWith("###") || section.startsWith("- **");
+            const isList = section.startsWith("-");
+
+            return (
+                <p key={`section-${index}`} className={isHeading ? "font-bold text-green-400" : isList ? "pl-4 list-disc" : "text-gray-200"}>
+                    {section}
+                </p>
+            );
+        });
+
+        return <div className="space-y-2">{sections}</div>;
     };
 
     const renderMainContent = () => {
@@ -106,7 +134,7 @@ export default function DashboardClient() {
                         <button className="px-4 py-2 bg-blue-500 rounded hover:bg-blue-600 transition-all" onClick={generateAiAdvice}>
                             Generate Advice
                         </button>
-                        {aiAdvice && <p className="mt-4 text-sm">{aiAdvice}</p>}
+                        <div className="mt-4">{renderAdvice(aiAdvice)}</div>
                     </div>
                 </div>
             );
