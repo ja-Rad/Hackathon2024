@@ -16,4 +16,5 @@ export interface MatchData {
     passes: string; 
     hsr: string; 
     date: string; 
+    Opposition: string;
 }

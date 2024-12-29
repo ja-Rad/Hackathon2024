@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useMetrics } from "@/app/hooks/useMetrics";
 import { ChartSection } from "@/app/components/ChartSection";
 import { fetchMatchData, fetchSeasonMetrics } from "@/app/lib/insightsHandlers";
@@ -9,6 +9,7 @@ import { determineSeason } from "@/app/utils/dateUtils";
 
 export default function InsightsPage({ params }: Readonly<{ params: Promise<{ id: string }> }>) {
     const { matchMetrics, setMatchMetrics, seasonMetrics, setSeasonMetrics, kpiMetrics, setKpiMetrics } = useMetrics();
+    const [matchDetails, setMatchDetails] = useState<{ enemyTeam: string; date: string; season: string } | null>(null);
 
     useEffect(() => {
         async function fetchMetrics() {
@@ -21,6 +22,11 @@ export default function InsightsPage({ params }: Readonly<{ params: Promise<{ id
 
                 // Determine the season
                 const season = determineSeason(matchData.date);
+                setMatchDetails({
+                    enemyTeam: matchData.Opposition,
+                    date: matchData.date,
+                    season,
+                });
 
                 // Fetch season metrics and set metrics
                 const { kpiMetrics, detailedMetrics } = await fetchSeasonMetrics(season);
@@ -34,14 +40,17 @@ export default function InsightsPage({ params }: Readonly<{ params: Promise<{ id
         fetchMetrics();
     }, [params, setKpiMetrics, setMatchMetrics, setSeasonMetrics]);
 
-    if (!matchMetrics || !seasonMetrics || !kpiMetrics) {
+    if (!matchMetrics || !seasonMetrics || !kpiMetrics || !matchDetails) {
         return <div>Loading...</div>;
     }
 
     return (
         <div className="p-6">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Match Insights</h1>
+                <h1 className="text-2xl font-bold">
+                    Insights: {matchDetails.enemyTeam} Match on {matchDetails.date} vs {matchDetails.season} Season Average
+                </h1>
+
                 <a href="/dashboard" className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
                     Back to Dashboard
                 </a>
