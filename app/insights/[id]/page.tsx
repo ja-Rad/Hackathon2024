@@ -51,7 +51,14 @@ export default function InsightsPage({ params }: Readonly<{ params: Promise<{ id
     }, [params, setKpiMetrics, setMatchMetrics, setSeasonMetrics]);
 
     if (!matchMetrics || !seasonMetrics || !kpiMetrics || !matchDetails) {
-        return <div>Loading...</div>;
+        return (
+            <div className="flex items-center justify-center h-screen bg-gray-900">
+                <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-blue-500 border-dotted rounded-full animate-spin mx-auto"></div>
+                    <p className="mt-4 text-white text-lg">Fetching match insights...</p>
+                </div>
+            </div>
+        );
     }
 
     return (

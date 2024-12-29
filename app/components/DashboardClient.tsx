@@ -13,6 +13,7 @@ export default function DashboardClient() {
     const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
     const [averageMetrics, setAverageMetrics] = useState<Match["metrics"] | null>(null);
     const [selectedMetric, setSelectedMetric] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true); // State to track loading
     const chartRef = useRef<HTMLDivElement | null>(null);
     const metricsRef = useRef<HTMLDivElement | null>(null);
 
@@ -32,6 +33,8 @@ export default function DashboardClient() {
                 setMatches(sortedData); // Set sorted data as matches
             } catch (error) {
                 console.error("Error fetching matches:", error);
+            } finally {
+                setIsLoading(false); // Set loading to false when fetching is done
             }
         }
 
@@ -44,7 +47,6 @@ export default function DashboardClient() {
             const [dayA, monthA, yearA] = a.date.split("/").map(Number);
             const [dayB, monthB, yearB] = b.date.split("/").map(Number);
 
-            // Subtract 1 from the month because the JavaScript Date object uses 0-based months
             const dateA = new Date(yearA, monthA - 1, dayA);
             const dateB = new Date(yearB, monthB - 1, dayB);
 
@@ -60,7 +62,7 @@ export default function DashboardClient() {
                 label: match.date,
             }));
 
-            renderBarChart(chartRef.current, data, selectedMetric.replace(/([A-Z])/g, " $1")); // Pass a human-readable metric label
+            renderBarChart(chartRef.current, data, selectedMetric.replace(/([A-Z])/g, " $1"));
         }
     }, [selectedMetric, selectedMatch, matches]);
 
@@ -73,6 +75,17 @@ export default function DashboardClient() {
             return <div className="text-gray-400 text-center">Select a match to see details.</div>;
         }
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center h-screen bg-gray-900">
+                <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-blue-500 border-dotted rounded-full animate-spin mx-auto"></div>
+                    <p className="mt-4 text-white text-lg">Loading Dashboard...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex h-screen bg-gray-900 text-gray-100">

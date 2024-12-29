@@ -6,6 +6,7 @@ import { handleTestDataUpload, processCsvData, uploadDataToDatabase } from "../l
 export default function UploadCSVClient() {
     const [csvFile, setCsvFile] = useState<File | null>(null);
     const [statusMessage, setStatusMessage] = useState<string>("");
+    const [isLoading, setIsLoading] = useState<boolean>(false); // Loading state
 
     const handleFileSelection = (event: ChangeEvent<HTMLInputElement>): void => {
         const file = event.target.files?.[0];
@@ -29,6 +30,7 @@ export default function UploadCSVClient() {
             return;
         }
 
+        setIsLoading(true); // Show loading screen
         try {
             await fetch("/api/football-matches", { method: "DELETE" });
 
@@ -40,17 +42,33 @@ export default function UploadCSVClient() {
             setStatusMessage(`Success: File "${csvFile.name}" uploaded successfully.`);
         } catch (error) {
             setStatusMessage(`Error: ${(error as Error).message}`);
+        } finally {
+            setIsLoading(false); // Hide loading screen
         }
     };
 
     const handleTestUpload = async (): Promise<void> => {
+        setIsLoading(true); // Show loading screen
         try {
             await handleTestDataUpload();
             setStatusMessage("Success: Test CSV data loaded.");
         } catch (error) {
             setStatusMessage(`Error: ${(error as Error).message}`);
+        } finally {
+            setIsLoading(false); // Hide loading screen
         }
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center h-screen bg-gray-900">
+                <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-blue-500 border-dotted rounded-full animate-spin mx-auto"></div>
+                    <p className="mt-4 text-white text-lg">Processing your request, please wait...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col items-center justify-center p-4">
