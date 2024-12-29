@@ -67,11 +67,21 @@ export default function DashboardClient() {
     const generateAiAdvice = async () => {
         try {
             const last10Metrics = matches.slice(0, 10).map((match) => match.metrics);
+
+            // Create a descriptive prompt for the AI request
+            const aiRequestPrompt = `
+            Based on the following performance metrics from the last 10 matches of Coventry City FC:
+            ${JSON.stringify(last10Metrics, null, 2)}
+            
+            Provide simple and straightforward advice for improving the team's performance. Focus on actionable and concise insights for both offensive and defensive strategies, along with overall team improvement.
+        `;
+
             const response = await fetch("/api/generate-advice", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ metrics: last10Metrics }),
+                body: JSON.stringify({ prompt: aiRequestPrompt }),
             });
+
             const data = await response.json();
             setAiAdvice(data.advice);
         } catch (error) {
