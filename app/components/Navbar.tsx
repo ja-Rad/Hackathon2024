@@ -1,24 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
 
 export default function Navbar() {
-    const [theme, setTheme] = useState("light");
-
-    useEffect(() => {
-        const savedTheme = localStorage.getItem("theme") ?? "light";
-        setTheme(savedTheme);
-        document.documentElement.classList.toggle("dark", savedTheme === "dark");
-    }, []);
-
-    const toggleTheme = () => {
-        const newTheme = theme === "light" ? "dark" : "light";
-        setTheme(newTheme);
-        localStorage.setItem("theme", newTheme);
-        document.documentElement.classList.toggle("dark");
-    };
-
     return (
         <nav className="bg-white dark:bg-gray-800 shadow-md">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
