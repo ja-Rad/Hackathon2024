@@ -6,6 +6,8 @@ import { MatchDetails } from "./MatchDetails";
 import { AverageMetricsChart } from "./AverageMetricsChart";
 import { calculateAverageMetrics } from "../utils/metrics";
 import { renderBarChart } from "../utils/barChart";
+import { generateAiAdvice } from "../utils/generateAiAdvice"; // Import the utility function
+import { sortMatchesByDateDescending } from "../utils/sortMatches"; // Import the sorting utility
 import { Match } from "../types/match";
 
 export default function DashboardClient() {
@@ -18,6 +20,7 @@ export default function DashboardClient() {
     const chartRef = useRef<HTMLDivElement | null>(null);
     const metricsRef = useRef<HTMLDivElement | null>(null);
 
+    // Fetch matches on component mount
     useEffect(() => {
         async function fetchMatches() {
             try {
@@ -40,18 +43,7 @@ export default function DashboardClient() {
         fetchMatches();
     }, []);
 
-    const sortMatchesByDateDescending = <T extends { date: string }>(data: T[]): T[] => {
-        return data.sort((a, b) => {
-            const [dayA, monthA, yearA] = a.date.split("/").map(Number);
-            const [dayB, monthB, yearB] = b.date.split("/").map(Number);
-
-            const dateA = new Date(yearA, monthA - 1, dayA);
-            const dateB = new Date(yearB, monthB - 1, dayB);
-
-            return dateB.getTime() - dateA.getTime();
-        });
-    };
-
+    // Update the bar chart whenever a new metric is selected
     useEffect(() => {
         if (selectedMetric && chartRef.current && selectedMatch === null) {
             const last10Matches = matches.slice(0, 10);
@@ -64,40 +56,7 @@ export default function DashboardClient() {
         }
     }, [selectedMetric, selectedMatch, matches]);
 
-    const generateAiAdvice = async () => {
-        try {
-            const last10Metrics = matches.slice(0, 10).map((match) => match.metrics);
-
-            const aiRequestPrompt = `
-                Based on the following performance metrics from the last 10 matches of Coventry City FC:
-                ${JSON.stringify(last10Metrics, null, 2)}
-
-                Provide actionable insights to improve performance in 5 sentences (maximum 100 words).
-            `;
-
-            const response = await fetch("/api/generate-ai-advice", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt: aiRequestPrompt }),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to fetch advice.");
-            }
-
-            const data = await response.json();
-
-            if (!data || !data.advice) {
-                throw new Error("Invalid response format.");
-            }
-
-            setAiAdvice(data.advice);
-        } catch (error) {
-            console.error("Error generating AI advice:", error);
-            setAiAdvice("Failed to generate advice. Please try again.");
-        }
-    };
-
+    // Render advice component
     const renderAdvice = (advice: string | null) => {
         if (!advice) {
             return <p className="text-gray-400">Click &quot;Generate Advice&quot; to see AI-driven performance insights.</p>;
@@ -118,6 +77,7 @@ export default function DashboardClient() {
         return <div className="space-y-2">{sections}</div>;
     };
 
+    // Render the main content of the dashboard
     const renderMainContent = () => {
         if (selectedMatch) {
             return <MatchDetails match={selectedMatch} metricsRef={metricsRef as React.RefObject<HTMLDivElement>} setSelectedMetric={setSelectedMetric} />;
@@ -131,7 +91,7 @@ export default function DashboardClient() {
                     {/* AI Advice Panel */}
                     <div className="p-4 bg-gray-800 text-white mt-4">
                         <h2 className="text-lg font-bold mb-4">AI Performance Advice</h2>
-                        <button className="px-4 py-2 bg-blue-500 rounded hover:bg-blue-600 transition-all" onClick={generateAiAdvice}>
+                        <button className="px-4 py-2 bg-blue-500 rounded hover:bg-blue-600 transition-all" onClick={() => generateAiAdvice(matches, setAiAdvice)}>
                             Generate Advice
                         </button>
                         <div className="mt-4">{renderAdvice(aiAdvice)}</div>
