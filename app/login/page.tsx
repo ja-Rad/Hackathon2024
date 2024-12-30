@@ -40,12 +40,22 @@ export default function LoginPage() {
         }
     };
 
+    const handleForgotPassword = () => {
+        setIsLoading(true);
+        router.push("/reset-password");
+    };
+
+    const handleSignupRedirect = () => {
+        setIsLoading(true);
+        router.push("/register");
+    };
+
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-screen bg-gray-900">
                 <div className="text-center">
                     <div className="w-16 h-16 border-4 border-blue-500 border-dotted rounded-full animate-spin mx-auto"></div>
-                    <p className="mt-4 text-white text-lg">Please wait...</p>
+                    <p className="mt-4 text-white text-lg">Processing your request, please wait...</p>
                 </div>
             </div>
         );
@@ -71,6 +81,21 @@ export default function LoginPage() {
                 <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600">
                     Login
                 </button>
+
+                <div className="text-center mt-4">
+                    <button type="button" onClick={handleForgotPassword} className="text-blue-500 hover:underline" disabled={isLoading}>
+                        Forgot Password?
+                    </button>
+                </div>
+
+                <div className="text-center mt-4">
+                    <p className="text-gray-500 dark:text-gray-400">
+                        Don&apos;t have an account?{" "}
+                        <button type="button" onClick={handleSignupRedirect} className="text-blue-500 hover:underline" disabled={isLoading}>
+                            Sign Up
+                        </button>
+                    </p>
+                </div>
             </form>
         </div>
     );
