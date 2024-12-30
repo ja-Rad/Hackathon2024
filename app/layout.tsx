@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
 import SessionProviderWrapper from "./components/SessionProviderWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -19,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <SessionProviderWrapper>
                     <Navbar />
                     <main>{children}</main>
-                    <Footer />
+                    {/* <Footer /> */}
                 </SessionProviderWrapper>
             </body>
         </html>
