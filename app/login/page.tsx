@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
@@ -16,18 +17,18 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            const response = await fetch("/api/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
+            const result = await signIn("credentials", {
+                email,
+                password,
+                redirect: false, // Prevent automatic redirect
             });
 
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.error || "Login failed");
+            if (result?.error) {
+                throw new Error(result.error);
             }
 
-            router.push("/document-uploader"); // Redirect to the dashboard on success
+            // Redirect to the document uploader page on success
+            router.push("/document-uploader");
         } catch (err: unknown) {
             if (err instanceof Error) {
                 setError(err.message);
@@ -39,17 +40,6 @@ export default function LoginPage() {
         }
     };
 
-    const handleForgotPassword = () => {
-        setIsLoading(true);
-        router.push("/reset-password");
-    };
-
-    const handleSignupRedirect = () => {
-        setIsLoading(true);
-        router.push("/register");
-    };
-
-    // Show a full-page loading animation while performing actions
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-screen bg-gray-900">
@@ -78,24 +68,9 @@ export default function LoginPage() {
                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" required />
                 </div>
 
-                <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600" disabled={isLoading}>
+                <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600">
                     Login
                 </button>
-
-                <div className="text-center mt-4">
-                    <button type="button" onClick={handleForgotPassword} className="text-blue-500 hover:underline" disabled={isLoading}>
-                        Forgot Password?
-                    </button>
-                </div>
-
-                <div className="text-center mt-4">
-                    <p className="text-gray-500 dark:text-gray-400">
-                        Don&apos;t have an account?{" "}
-                        <button type="button" onClick={handleSignupRedirect} className="text-blue-500 hover:underline" disabled={isLoading}>
-                            Sign Up
-                        </button>
-                    </p>
-                </div>
             </form>
         </div>
     );

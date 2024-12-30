@@ -1,9 +1,11 @@
-import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { connectToDatabase } from "@/app/lib/mongodb";
+import bcrypt from "bcrypt";
 
-export const authOptions: AuthOptions = {
+export const authOptions = {
     session: {
-        strategy: "jwt", // Use JWT-based sessions
+        strategy: "jwt",
+        maxAge: 30 * 60, // 30 minutes
     },
     providers: [
         CredentialsProvider({
@@ -12,7 +14,21 @@ export const authOptions: AuthOptions = {
                 email: { label: "Email", type: "text" },
                 password: { label: "Password", type: "password" },
             },
-            // No 'authorize' function needed because /login handles it
+            async authorize(credentials) {
+                const { db } = await connectToDatabase();
+                const user = await db.collection("users").findOne({ email: credentials?.email });
+
+                if (!user) {
+                    throw new Error("Invalid email or password");
+                }
+
+                const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+                if (!isPasswordValid) {
+                    throw new Error("Invalid email or password");
+                }
+
+                return { id: user._id.toString(), email: user.email };
+            },
         }),
     ],
     callbacks: {
@@ -24,12 +40,9 @@ export const authOptions: AuthOptions = {
             return token;
         },
         async session({ session, token }) {
-            session.user = {
-                id: token.id,
-                email: token.email,
-            };
+            session.user = { id: token.id, email: token.email };
             return session;
         },
     },
-    secret: process.env.NEXTAUTH_SECRET, // Ensure this matches across the app
+    secret: process.env.NEXTAUTH_SECRET,
 };
