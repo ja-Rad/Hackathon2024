@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
         return [
             {
                 source: "/",
-                destination: "/upload-csv",
+                destination: "/login",
                 permanent: true,
             },
         ];

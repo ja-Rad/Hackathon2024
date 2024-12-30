@@ -7,8 +7,8 @@ import Footer from "./components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "Skeleton",
-    description: "Skeleton",
+    title: "VisionFC",
+    description: "VisionFC",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

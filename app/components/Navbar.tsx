@@ -10,13 +10,16 @@ export default function Navbar() {
                     {/* Logo Section */}
                     <div className="flex items-center">
                         <Link href="/" className="text-gray-800 dark:text-white text-lg font-semibold">
-                            CSV Uploader
+                            Vision FC
                         </Link>
                     </div>
 
                     {/* Navigation Buttons */}
                     <div className="flex items-center space-x-4">
                         {/* Link to Document Uploader */}
+                        <Link href="/login" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-all">
+                            Login
+                        </Link>
                         <Link href="/document-uploader" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-all">
                             CSV Upload
                         </Link>

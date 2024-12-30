@@ -4,19 +4,30 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 Must have docker desktop
 
-## How to run:
+## How to install:
 
 ```bash
 docker-compose up --build -d mongodb
 npm install
+```
+
+## How to run:
+
+```bash
 npm run dev | yarn dev | pnpm dev | bun dev
+```
+
+## Useful commands:
+
+// Generates NEXTAUTH_SECRET variable
+
+```bash
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 ```
 
 And go to: [http://localhost:3000](http://localhost:3000) with your browser
 
 ## API
-
-
 
 ## Project structure
 

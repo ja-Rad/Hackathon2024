@@ -3,13 +3,12 @@
     http://localhost:3000/api/test-mongo-connection
 */
 
-import clientPromise from "@/app/lib/mongodb";
+import { connectToDatabase } from "@/app/lib/mongodb";
 import { CollectionInfo } from "mongodb";
 
 export async function GET() {
     try {
-        const client = await clientPromise;
-        const db = client.db("coventryCityDB");
+        const { db } = await connectToDatabase();
 
         // Fetch list of collections
         const collections: CollectionInfo[] = await db.listCollections().toArray();
@@ -17,10 +16,14 @@ export async function GET() {
         // Fetch all documents from the "football_matches" collection
         const footballMatches = await db.collection("football_matches").find({}).toArray();
 
+        // Fetch all documents from the "users" collection
+        const users = await db.collection("users").find({}).toArray();
+
         return Response.json({
             message: "Connected to MongoDB",
             collections: collections.map((collection) => collection.name),
-            footballMatches, // Include all documents from the collection
+            footballMatches,
+            users,
         });
     } catch (error: unknown) {
         let errorMessage = "An unknown error occurred";

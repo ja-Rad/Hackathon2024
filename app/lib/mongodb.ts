@@ -1,6 +1,10 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, Db } from "mongodb";
 
 const uri: string | undefined = process.env.MONGODB_URI;
+
+if (!uri) {
+    throw new Error("Add Mongo URI to .env");
+}
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>; // NOSONAR
@@ -10,12 +14,9 @@ declare global {
     var _mongoClientPromise: Promise<MongoClient>; // NOSONAR
 }
 
-if (!uri) {
-    throw new Error("Add Mongo URI to .env");
-}
-
 if (process.env.NODE_ENV === "development") {
-    if (!global._mongoClientPromise) { // NOSONAR
+    if (!global._mongoClientPromise) {
+        // NOSONAR
         client = new MongoClient(uri);
         global._mongoClientPromise = client.connect();
     }
@@ -24,5 +25,12 @@ if (process.env.NODE_ENV === "development") {
     client = new MongoClient(uri);
     clientPromise = client.connect();
 }
+
+// Helper function to connect to the database
+export const connectToDatabase = async (): Promise<{ client: MongoClient; db: Db }> => {
+    const client = await clientPromise;
+    const db = client.db("coventryCityDB");
+    return { client, db };
+};
 
 export default clientPromise;
