@@ -27,7 +27,7 @@ export default function LoginPage() {
                 throw new Error(data.error || "Login failed");
             }
 
-            router.push("/dashboard"); // Redirect to the dashboard on success
+            router.push("/document-uploader"); // Redirect to the dashboard on success
         } catch (err: unknown) {
             if (err instanceof Error) {
                 setError(err.message);
