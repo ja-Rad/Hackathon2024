@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/app/lib/mongodb";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { encode } from "next-auth/jwt"; // Import NextAuth's encode function
 
 export async function POST(req: NextRequest) {
     try {
@@ -27,10 +27,17 @@ export async function POST(req: NextRequest) {
             throw new Error("NEXTAUTH_SECRET is not set in environment variables.");
         }
 
-        const token = jwt.sign({ id: user._id.toString(), email: user.email }, process.env.NEXTAUTH_SECRET, { expiresIn: "30m" });
+        // Use NextAuth's encode function to create a compatible JWT
+        const token = await encode({
+            token: { id: user._id.toString(), email: user.email },
+            secret: process.env.NEXTAUTH_SECRET,
+            maxAge: 30 * 60, // 30 minutes
+        });
 
         const response = NextResponse.json({ message: "Login successful" });
-        response.cookies.set("token", token, {
+
+        // Set the token as the same cookie NextAuth uses
+        response.cookies.set("next-auth.session-token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             maxAge: 30 * 60,

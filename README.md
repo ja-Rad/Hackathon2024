@@ -17,6 +17,8 @@ npm install
 npm run dev | yarn dev | pnpm dev | bun dev
 ```
 
+And go to: [http://localhost:3000](http://localhost:3000) with your browser
+
 ## Useful commands:
 
 // Generates NEXTAUTH_SECRET variable
@@ -25,9 +27,10 @@ npm run dev | yarn dev | pnpm dev | bun dev
 node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 ```
 
-And go to: [http://localhost:3000](http://localhost:3000) with your browser
-
 ## API
+
+http://localhost:3000/api/auth/session
+http://localhost:3000/api/test-mongo-connection
 
 ## Project structure
 
