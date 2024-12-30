@@ -44,5 +44,8 @@ export const authOptions = {
             return session;
         },
     },
+    pages: {
+        signIn: "/login", // Redirect here when not authenticated
+    },
     secret: process.env.NEXTAUTH_SECRET,
 };

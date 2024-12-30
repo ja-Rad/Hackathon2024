@@ -5,8 +5,6 @@ import { signOut, useSession } from "next-auth/react";
 
 export default function Navbar() {
     const { data: session, status } = useSession();
-    console.log("Navbar Session Data:", session);
-    console.log("Navbar Session Status:", status);
 
     return (
         <nav className="bg-white dark:bg-gray-800 shadow-md">
