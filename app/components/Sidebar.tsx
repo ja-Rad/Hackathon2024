@@ -3,7 +3,7 @@ import * as d3 from "d3";
 import { Match } from "../types/match";
 import { SidebarItem } from "./SidebarItem";
 import { calculateCPI, evaluateCPI } from "../utils/metrics";
-import { determineOutcome } from "../utils/matchUtils"; // Import from utils
+import { determineOutcome } from "../utils/matchUtils";
 
 type SidebarProps = Readonly<{
     matches: Match[];
@@ -14,7 +14,7 @@ type SidebarProps = Readonly<{
 
 export function Sidebar({ matches, selectedMatch, setSelectedMatch, chartRef }: SidebarProps) {
     return (
-        <aside className="w-1/4 bg-gray-800 overflow-y-auto border-r border-gray-700">
+        <aside className="w-1/4 bg-background-dark overflow-y-auto border-r border-border-dark">
             {/* Default option for recent matches */}
             <SidebarItem isActive={selectedMatch === null} onClick={() => setSelectedMatch(null)} title="Most Recent Matches" subtitle="Averages from the last 10 matches" cpi={""} />
 

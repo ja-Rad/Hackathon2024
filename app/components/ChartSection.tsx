@@ -13,8 +13,8 @@ type ChartSectionProps = {
 
 export const ChartSection: React.FC<ChartSectionProps> = ({ title, matchKpiValue, seasonKpiValue, tooltipText, matchMetrics, seasonMetrics }) => {
     return (
-        <div>
-            <h4 className="flex items-center">
+        <div className="bg-background-card p-4 rounded">
+            <h4 className="flex items-center text-text-light">
                 {title}: Match {matchKpiValue.toFixed(2)} | Season Avg {seasonKpiValue.toFixed(2)}
                 <TooltipIcon tooltipText={tooltipText} />
             </h4>

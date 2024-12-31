@@ -25,17 +25,17 @@ export const SpiderChart: React.FC<SpiderChartProps> = ({ title, metrics, season
     return (
         <div className="flex flex-col justify-center items-center">
             <div>
-                <h3 className="text-lg font-bold mb-2 text-center">{title}</h3>
+                <h3 className="text-lg font-bold mb-2 text-center text-text-light">{title}</h3>
                 <div ref={chartRef}></div>
             </div>
             <div className="flex justify-center items-center mt-4">
                 <div className="mr-4 flex items-center">
                     <span className="w-4 h-4 block" style={{ backgroundColor: "#ff6666", marginRight: "8px" }}></span>
-                    <span className="text-sm text-white">Current Match</span>
+                    <span className="text-sm text-text-light">Current Match</span>
                 </div>
                 <div className="flex items-center">
                     <span className="w-4 h-4 block" style={{ backgroundColor: "#6666ff", marginRight: "8px" }}></span>
-                    <span className="text-sm text-white">Season Average</span>
+                    <span className="text-sm text-text-light">Season Average</span>
                 </div>
             </div>
         </div>

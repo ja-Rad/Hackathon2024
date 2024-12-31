@@ -20,7 +20,7 @@ export default function InsightsPage({ params }: Readonly<{ params: Promise<{ id
     useEffect(() => {
         async function fetchMetrics() {
             try {
-                const { id } = await params; // Await the params Promise
+                const { id } = await params;
 
                 // Fetch match data and set metrics
                 const matchData = await fetchMatchData(id);
@@ -52,27 +52,27 @@ export default function InsightsPage({ params }: Readonly<{ params: Promise<{ id
 
     if (!matchMetrics || !seasonMetrics || !kpiMetrics || !matchDetails) {
         return (
-            <div className="flex items-center justify-center h-screen bg-gray-900">
+            <div className="flex items-center justify-center h-screen bg-background-dark">
                 <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-blue-500 border-dotted rounded-full animate-spin mx-auto"></div>
-                    <p className="mt-4 text-white text-lg">Fetching match insights...</p>
+                    <div className="w-16 h-16 border-4 border-primary border-dotted rounded-full animate-spin mx-auto"></div>
+                    <p className="mt-4 text-text-light text-lg">Fetching match insights...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="p-6">
+        <div className="p-6 bg-background-dark min-h-screen text-text-light">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">
                     Insights: {matchDetails.enemyTeam} Match on {matchDetails.date} vs {matchDetails.season} Season Average
                 </h1>
 
-                <a href="/dashboard" className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+                <a href="/dashboard" className="bg-primary text-white hover:bg-primary-hover font-semibold py-2 px-4 rounded transition-all">
                     Back to Dashboard
                 </a>
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <ChartSection title="Offensive CPI" matchKpiValue={matchDetails.kpiMatch.offensive} seasonKpiValue={kpiMetrics.offensive} tooltipText="Focuses on Coventry's attacking performance: Scoring efficiency, chance creation, and attacking efficiency." matchMetrics={matchMetrics.offensive} seasonMetrics={seasonMetrics.offensive} />
                 <ChartSection title="Defensive CPI" matchKpiValue={matchDetails.kpiMatch.defensive} seasonKpiValue={kpiMetrics.defensive} tooltipText="Assesses Coventry's defensive stability: Defensive vulnerabilities, proactive actions, and limiting opponent chances." matchMetrics={matchMetrics.defensive} seasonMetrics={seasonMetrics.defensive} />
                 <ChartSection title="General CPI" matchKpiValue={matchDetails.kpiMatch.general} seasonKpiValue={kpiMetrics.general} tooltipText="Combines offensive, defensive, and general metrics for an overall evaluation of team performance." matchMetrics={matchMetrics.general} seasonMetrics={seasonMetrics.general} />

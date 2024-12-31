@@ -13,7 +13,7 @@ interface MainContentProps {
     setAiAdvice: React.Dispatch<React.SetStateAction<string | null>>;
     generateAiAdvice: () => void;
     aiAdvice: string | null;
-    isAdviceLoading: boolean; // Add loading state prop
+    isAdviceLoading: boolean;
 }
 
 const MainContent: React.FC<MainContentProps> = ({ selectedMatch, averageMetrics, metricsRef, chartRef, setSelectedMetric, matches, setAiAdvice, generateAiAdvice, aiAdvice, isAdviceLoading }) => {
@@ -21,14 +21,14 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMatch, averageMetrics
         if (isAdviceLoading) {
             return (
                 <div className="flex items-center justify-center">
-                    <div className="w-8 h-8 border-4 border-blue-500 border-dotted rounded-full animate-spin"></div>
-                    <p className="ml-2 text-gray-400">Generating advice...</p>
+                    <div className="w-8 h-8 border-4 border-primary-light border-dotted rounded-full animate-spin"></div>
+                    <p className="ml-2 text-text-light">Generating advice...</p>
                 </div>
             );
         }
 
         if (!advice) {
-            return <p className="text-gray-400">Click &quot;Generate Advice&quot; to see AI-driven performance insights.</p>;
+            return <p className="text-text-light">Click &quot;Generate Advice&quot; to see AI-driven performance insights.</p>;
         }
 
         // Split advice into sections
@@ -37,7 +37,7 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMatch, averageMetrics
             const isList = section.startsWith("-");
 
             return (
-                <p key={`section-${index}`} className={isHeading ? "font-bold text-green-400" : isList ? "pl-4 list-disc" : "text-gray-200"}>
+                <p key={`section-${index}`} className={isHeading ? "font-bold text-success" : isList ? "pl-4 list-disc" : "text-text-light"}>
                     {section}
                 </p>
             );
@@ -56,14 +56,9 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMatch, averageMetrics
                 <div>
                     <AverageMetricsChart averageMetrics={averageMetrics} metricsRef={metricsRef} setSelectedMetric={setSelectedMetric} chartRef={chartRef} />
                 </div>
-                {/* AI Advice Panel */}
-                <div className="p-4 bg-gray-800 text-white mt-4">
+                <div className="p-4 bg-background-card text-text-light mt-4 rounded">
                     <h2 className="text-lg font-bold mb-4">AI Performance Advice</h2>
-                    <button
-                        className="px-4 py-2 bg-blue-500 rounded hover:bg-blue-600 transition-all"
-                        onClick={generateAiAdvice}
-                        disabled={isAdviceLoading} // Disable button while loading
-                    >
+                    <button className="px-4 py-2 bg-primary hover:bg-primary-hover rounded text-white" onClick={generateAiAdvice} disabled={isAdviceLoading}>
                         {isAdviceLoading ? "Loading..." : "Generate Advice"}
                     </button>
                     <div className="mt-4">{renderAdvice(aiAdvice)}</div>
@@ -72,7 +67,7 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMatch, averageMetrics
         );
     }
 
-    return <div className="text-gray-400 text-center">Select a match to see details.</div>;
+    return <div className="text-text-light text-center">Select a match to see details.</div>;
 };
 
 export default MainContent;

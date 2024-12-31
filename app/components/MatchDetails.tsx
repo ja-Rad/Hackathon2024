@@ -11,18 +11,17 @@ type MatchDetailsProps = Readonly<{
 export function MatchDetails({ match, metricsRef, setSelectedMetric }: MatchDetailsProps) {
     return (
         <>
-            <div className="p-4 bg-gray-800 rounded mb-4">
-                <h2 className="text-xl font-bold text-gray-200 mb-2">
+            <div className="p-4 bg-background-card rounded mb-4 text-text-light">
+                <h2 className="text-xl font-bold mb-2">
                     {match.homeTeam} vs {match.awayTeam}
                 </h2>
                 <p>
-                    Score: <span className="text-gray-300">{match.score}</span>
+                    Score: <span className="text-primary-light">{match.score}</span>
                 </p>
                 <p>
-                    Date: <span className="text-gray-300">{match.date}</span>
+                    Date: <span className="text-primary-light">{match.date}</span>
                 </p>
-                {/* Existing Match Details UI */}
-                <a href={`/insights/${match.id}`} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 inline-block">
+                <a href={`/insights/${match.id}`} className="mt-4 px-4 py-2 bg-primary hover:bg-primary-hover rounded inline-block text-white">
                     Season Insights
                 </a>
             </div>

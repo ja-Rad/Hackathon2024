@@ -59,17 +59,17 @@ export default function DashboardClient() {
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center h-screen bg-gray-900">
+            <div className="flex items-center justify-center h-screen bg-background-dark">
                 <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-blue-500 border-dotted rounded-full animate-spin mx-auto"></div>
-                    <p className="mt-4 text-white text-lg">Loading Dashboard...</p>
+                    <div className="w-16 h-16 border-4 border-primary-light border-dotted rounded-full animate-spin mx-auto"></div>
+                    <p className="mt-4 text-text-light text-lg">Loading Dashboard...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="flex h-screen bg-gray-900 text-gray-100">
+        <div className="flex h-screen bg-background-dark text-text-light">
             {showConfetti && <Confetti />}
             <Sidebar matches={matches} selectedMatch={selectedMatch} setSelectedMatch={setSelectedMatch} chartRef={chartRef} />
             <main className="w-3/4 p-4">

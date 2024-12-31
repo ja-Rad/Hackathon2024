@@ -20,7 +20,7 @@ export default function LoginPage() {
             const result = await signIn("credentials", {
                 email,
                 password,
-                redirect: false, // Prevent automatic redirect
+                redirect: false,
             });
 
             if (result?.error) {
@@ -40,58 +40,48 @@ export default function LoginPage() {
         }
     };
 
-    const handleForgotPassword = () => {
-        setIsLoading(true);
-        router.push("/reset-password");
-    };
-
-    const handleSignupRedirect = () => {
-        setIsLoading(true);
-        router.push("/register");
-    };
-
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center h-screen bg-gray-900">
+            <div className="flex items-center justify-center h-screen bg-background-dark">
                 <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-blue-500 border-dotted rounded-full animate-spin mx-auto"></div>
-                    <p className="mt-4 text-white text-lg">Processing your request, please wait...</p>
+                    <div className="w-16 h-16 border-4 border-primary border-dotted rounded-full animate-spin mx-auto"></div>
+                    <p className="mt-4 text-text-light text-lg">Processing your request, please wait...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-900">
-            <form className="p-6 bg-white dark:bg-gray-800 shadow-md rounded" onSubmit={handleLogin}>
-                <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">Login</h2>
+        <div className="flex items-center justify-center h-screen bg-background-dark">
+            <form className="p-6 bg-background-card shadow-md rounded w-full max-w-md">
+                <h2 className="text-2xl font-bold mb-4 text-text-light">Sign In</h2>
 
-                {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+                {error && <p className="text-error text-sm mb-4">{error}</p>}
 
                 <div className="mb-4">
-                    <label className="block text-gray-700 dark:text-gray-300">Email</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" required />
+                    <label className="block text-text-muted">Email</label>
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border rounded bg-background-input text-text-light border-border-muted" required />
                 </div>
 
                 <div className="mb-4">
-                    <label className="block text-gray-700 dark:text-gray-300">Password</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" required />
+                    <label className="block text-text-muted">Password</label>
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2 border rounded bg-background-input text-text-light border-border-muted" required />
                 </div>
 
-                <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                    Login
+                <button type="submit" onClick={handleLogin} className="w-full p-2 bg-primary text-white rounded hover:bg-primary-hover transition-all">
+                    Sign In
                 </button>
 
                 <div className="text-center mt-4">
-                    <button type="button" onClick={handleForgotPassword} className="text-blue-500 hover:underline" disabled={isLoading}>
+                    <button type="button" onClick={() => router.push("/reset-password")} className="text-primary hover:underline">
                         Forgot Password?
                     </button>
                 </div>
 
                 <div className="text-center mt-4">
-                    <p className="text-gray-500 dark:text-gray-400">
+                    <p className="text-text-muted">
                         Don&apos;t have an account?{" "}
-                        <button type="button" onClick={handleSignupRedirect} className="text-blue-500 hover:underline" disabled={isLoading}>
+                        <button type="button" onClick={() => router.push("/register")} className="text-primary hover:underline">
                             Sign Up
                         </button>
                     </p>
