@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function Navbar() {
     const { data: session, status } = useSession();
@@ -19,8 +20,9 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     <div className="flex items-center">
+                        <Image src="/images/logo.png" width={32} height={32} alt="VisionFC Logo" />
                         <Link href="/" className="text-lg font-semibold text-gray-800 dark:text-white">
-                            Vision FC
+                            VisionFC
                         </Link>
                     </div>
                     <div className="flex items-center space-x-4">
