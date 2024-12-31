@@ -19,6 +19,3 @@ export const config = {
 //     return NextResponse.next();
 // }
 
-// http://localhost:3000/insights/677216219d0c259392028867
-//
-//
