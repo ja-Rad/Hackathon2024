@@ -68,17 +68,17 @@ export default function SignupPage() {
 
                 <div className="mb-4">
                     <label className="block text-text-muted">Email</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border rounded bg-background-input text-text-light border-border-muted" required />
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border rounded bg-background-input input-text-color border-border-muted" required />
                 </div>
 
                 <div className="mb-4">
                     <label className="block text-text-muted">Password</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2 border rounded bg-background-input text-text-light border-border-muted" required />
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2 border rounded bg-background-input input-text-color border-border-muted" required />
                 </div>
 
                 <div className="mb-4">
                     <label className="block text-text-muted">Confirm Password</label>
-                    <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full p-2 border rounded bg-background-input text-text-light border-border-muted" required />
+                    <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full p-2 border rounded bg-background-input input-text-color border-border-muted" required />
                 </div>
 
                 <button type="submit" onClick={handleSignup} className="w-full p-2 bg-primary text-white rounded hover:bg-primary-hover transition-all">

@@ -32,6 +32,12 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Custom text style for form input labels and placeholders */
+.input-text-color {
+    --tw-text-opacity: 1;
+    color: #171717 !important; /* Apply the color to input text */
+}
+
 .unselectable {
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
