@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import { Match } from "../types/match";
 import { SidebarItem } from "./SidebarItem";
 import { calculateCPI, evaluateCPI } from "../utils/metrics";
+import { determineOutcome } from "../utils/matchUtils"; // Import from utils
 
 type SidebarProps = Readonly<{
     matches: Match[];
@@ -10,13 +11,6 @@ type SidebarProps = Readonly<{
     setSelectedMatch: (match: Match | null) => void;
     chartRef: React.RefObject<HTMLDivElement | null>;
 }>;
-
-function determineOutcome(match: Match): string {
-    const [homeScore, awayScore] = match.score.split(" - ").map(Number);
-    if (homeScore > awayScore) return "Won";
-    if (homeScore < awayScore) return "Lost";
-    return "Draw";
-}
 
 export function Sidebar({ matches, selectedMatch, setSelectedMatch, chartRef }: SidebarProps) {
     return (
