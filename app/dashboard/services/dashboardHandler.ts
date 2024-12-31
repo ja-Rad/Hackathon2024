@@ -1,6 +1,6 @@
-import { calculateAverageMetrics } from "../utils/metrics";
-import { sortMatchesByDateDescending } from "../utils/sortMatches";
-import { Match } from "../types/match";
+import { calculateAverageMetrics } from "../../utils/metrics";
+import { sortMatchesByDateDescending } from "../../utils/sortMatches";
+import { Match } from "../../types/match";
 
 export const fetchMatchesData = async (setMatches: React.Dispatch<React.SetStateAction<Match[]>>, setAverageMetrics: React.Dispatch<React.SetStateAction<Match["metrics"] | null>>, setIsLoading: React.Dispatch<React.SetStateAction<boolean>>) => {
     try {

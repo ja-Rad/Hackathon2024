@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, ChangeEvent } from "react";
-import { handleTestDataUpload, processCsvData, uploadDataToDatabase } from "../lib/csvHandlers";
+import { handleTestDataUpload, processCsvData, uploadDataToDatabase } from "../document-uploader/services/csvHandlers";
 
 export default function UploadCSVClient() {
     const [csvFile, setCsvFile] = useState<File | null>(null);

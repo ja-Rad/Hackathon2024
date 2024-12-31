@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { useMetrics } from "@/app/hooks/useMetrics";
 import { ChartSection } from "@/app/components/ChartSection";
-import { fetchMatchData, fetchSeasonMetrics } from "@/app/lib/insightsHandlers";
-import { mapMatchMetrics, mapSeasonMetrics, mapKpiMetrics } from "@/app/lib/metricsMapper";
+import { fetchMatchData, fetchSeasonMetrics } from "@/app/insights/[id]/services/insightsHandlers";
+import { mapMatchMetrics, mapSeasonMetrics, mapKpiMetrics } from "@/app/insights/[id]/services/metricsMapper";
 import { determineSeason } from "@/app/utils/dateUtils";
 import { calculateMatchMetrics } from "@/app/utils/metrics";
 

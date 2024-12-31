@@ -5,7 +5,7 @@ import { Sidebar } from "./Sidebar";
 import MainContent from "./MainContent";
 import { renderBarChart } from "../utils/barChart";
 import { generateAiAdvice } from "../utils/generateAiAdvice";
-import { fetchMatchesData } from "../lib/dashboardHandler";
+import { fetchMatchesData } from "../dashboard/services/dashboardHandler";
 import { Match } from "../types/match";
 import Confetti from "react-confetti";
 

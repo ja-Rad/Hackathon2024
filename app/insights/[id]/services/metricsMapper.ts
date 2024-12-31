@@ -1,5 +1,5 @@
 import { MatchData } from "@/app/types/matchData";
-import { DetailedMetrics, KpiMetrics } from "../types/metrics";
+import { DetailedMetrics, KpiMetrics } from "../../../types/metrics";
 
 export function mapMatchMetrics(matchData: MatchData) {
     return {

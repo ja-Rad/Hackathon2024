@@ -1,5 +1,5 @@
 import { MatchData } from "@/app/types/matchData";
-import { DetailedMetrics, KpiMetrics } from "../types/metrics";
+import { DetailedMetrics, KpiMetrics } from "../../../types/metrics";
 
 export async function fetchMatchData(id: string): Promise<MatchData> {
     const response = await fetch(`/api/football-matches?id=${id}`);
