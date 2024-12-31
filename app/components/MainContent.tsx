@@ -9,14 +9,12 @@ interface MainContentProps {
     metricsRef: React.RefObject<HTMLDivElement>;
     chartRef: React.RefObject<HTMLDivElement>;
     setSelectedMetric: React.Dispatch<React.SetStateAction<string | null>>;
-    matches: Match[];
-    setAiAdvice: React.Dispatch<React.SetStateAction<string | null>>;
     generateAiAdvice: () => void;
     aiAdvice: string | null;
     isAdviceLoading: boolean;
 }
 
-const MainContent: React.FC<MainContentProps> = ({ selectedMatch, averageMetrics, metricsRef, chartRef, setSelectedMetric, matches, setAiAdvice, generateAiAdvice, aiAdvice, isAdviceLoading }) => {
+const MainContent: React.FC<MainContentProps> = ({ selectedMatch, averageMetrics, metricsRef, chartRef, setSelectedMetric, generateAiAdvice, aiAdvice, isAdviceLoading }) => {
     const renderAdvice = (advice: string | null) => {
         if (isAdviceLoading) {
             return (
@@ -32,18 +30,24 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMatch, averageMetrics
         }
 
         // Split advice into sections
-        const sections = advice.split("\n\n").map((section, index) => {
-            const isHeading = section.startsWith("###") || section.startsWith("- **");
-            const isList = section.startsWith("-");
+        return (
+            <div className="space-y-2">
+                {advice.split("\n\n").map((section, index) => {
+                    let className = "text-text-light"; // Default class
+                    if (section.startsWith("###") || section.startsWith("- **")) {
+                        className = "font-bold text-success"; // Heading style
+                    } else if (section.startsWith("-")) {
+                        className = "pl-4 list-disc"; // List style
+                    }
 
-            return (
-                <p key={`section-${index}`} className={isHeading ? "font-bold text-success" : isList ? "pl-4 list-disc" : "text-text-light"}>
-                    {section}
-                </p>
-            );
-        });
-
-        return <div className="space-y-2">{sections}</div>;
+                    return (
+                        <p key={`${section}-${index}`} className={className}>
+                            {section}
+                        </p>
+                    );
+                })}
+            </div>
+        );
     };
 
     if (selectedMatch) {

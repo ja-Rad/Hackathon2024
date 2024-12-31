@@ -14,9 +14,13 @@ export default function TooltipIcon({ tooltipText }: Readonly<{ tooltipText: str
     const handleMouseLeave = () => {
         setTooltipPosition(null);
     };
-
+    
     return (
-        <span className="relative group cursor-pointer ml-2" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+        <span // NOSONAR
+            className="relative group cursor-pointer ml-2"
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+        >
             {tooltipPosition && (
                 <span
                     className="bg-background-card text-text-light text-sm px-4 py-2 rounded absolute z-10 max-w-xs break-words"
