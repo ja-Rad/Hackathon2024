@@ -14,6 +14,7 @@ db.createUser({
 });
 
 // Create a collection to initialize the database
+// It is used only to test db
 db.createCollection("football_matches");
 
 // Insert some sample data to ensure the database is initialized
