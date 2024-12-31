@@ -3,10 +3,10 @@
 import { SessionProvider } from "next-auth/react";
 import type { Session } from "next-auth";
 
-type Props = {
+type Props = Readonly<{
     children: React.ReactNode;
     initialSession?: Session | null;
-};
+}>;
 
 export default function SessionProviderWrapper({ children, initialSession }: Props) {
     return (
