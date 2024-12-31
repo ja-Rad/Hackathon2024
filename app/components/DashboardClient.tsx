@@ -7,6 +7,7 @@ import { renderBarChart } from "../utils/barChart";
 import { generateAiAdvice } from "../utils/generateAiAdvice";
 import { fetchMatchesData } from "../lib/dashboardHandler";
 import { Match } from "../types/match";
+import Confetti from "react-confetti";
 
 export default function DashboardClient() {
     const [matches, setMatches] = useState<Match[]>([]);
@@ -15,7 +16,8 @@ export default function DashboardClient() {
     const [selectedMetric, setSelectedMetric] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [aiAdvice, setAiAdvice] = useState<string | null>(null);
-    const [isAdviceLoading, setIsAdviceLoading] = useState(false); // Loading state for advice
+    const [isAdviceLoading, setIsAdviceLoading] = useState(false);
+    const [showConfetti, setShowConfetti] = useState(false);
     const chartRef = useRef<HTMLDivElement>(null);
     const metricsRef = useRef<HTMLDivElement>(null);
 
@@ -23,6 +25,17 @@ export default function DashboardClient() {
     useEffect(() => {
         fetchMatchesData(setMatches, setAverageMetrics, setIsLoading);
     }, []);
+
+    // Handle confetti for wins
+    useEffect(() => {
+        if (selectedMatch) {
+            const [homeScore, awayScore] = selectedMatch.score.split(" - ").map(Number);
+            if (selectedMatch.homeTeam === "Coventry City" && homeScore > awayScore) {
+                setShowConfetti(true);
+                setTimeout(() => setShowConfetti(false), 5000); // Show confetti for 5 seconds
+            }
+        }
+    }, [selectedMatch]);
 
     // Update the bar chart whenever a new metric is selected
     useEffect(() => {
@@ -57,20 +70,10 @@ export default function DashboardClient() {
 
     return (
         <div className="flex h-screen bg-gray-900 text-gray-100">
+            {showConfetti && <Confetti />}
             <Sidebar matches={matches} selectedMatch={selectedMatch} setSelectedMatch={setSelectedMatch} chartRef={chartRef} />
             <main className="w-3/4 p-4">
-                <MainContent
-                    selectedMatch={selectedMatch}
-                    averageMetrics={averageMetrics}
-                    metricsRef={metricsRef}
-                    chartRef={chartRef}
-                    setSelectedMetric={setSelectedMetric}
-                    matches={matches}
-                    setAiAdvice={setAiAdvice}
-                    generateAiAdvice={handleGenerateAdvice}
-                    aiAdvice={aiAdvice}
-                    isAdviceLoading={isAdviceLoading} // Pass loading state
-                />
+                <MainContent selectedMatch={selectedMatch} averageMetrics={averageMetrics} metricsRef={metricsRef} chartRef={chartRef} setSelectedMetric={setSelectedMetric} matches={matches} setAiAdvice={setAiAdvice} generateAiAdvice={handleGenerateAdvice} aiAdvice={aiAdvice} isAdviceLoading={isAdviceLoading} />
             </main>
         </div>
     );

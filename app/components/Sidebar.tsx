@@ -8,8 +8,15 @@ type SidebarProps = Readonly<{
     matches: Match[];
     selectedMatch: Match | null;
     setSelectedMatch: (match: Match | null) => void;
-    chartRef: React.RefObject<HTMLDivElement | null>; // Allow nullable ref
+    chartRef: React.RefObject<HTMLDivElement | null>;
 }>;
+
+function determineOutcome(match: Match): string {
+    const [homeScore, awayScore] = match.score.split(" - ").map(Number);
+    if (homeScore > awayScore) return "Won";
+    if (homeScore < awayScore) return "Lost";
+    return "Draw";
+}
 
 export function Sidebar({ matches, selectedMatch, setSelectedMatch, chartRef }: SidebarProps) {
     return (
@@ -21,6 +28,7 @@ export function Sidebar({ matches, selectedMatch, setSelectedMatch, chartRef }: 
             {matches.map((match) => {
                 const cpi = calculateCPI(match);
                 const cpiText = cpi === "N/A" ? "Not enough data" : `${cpi.toFixed(2)} (${evaluateCPI(cpi)})`;
+                const outcome = determineOutcome(match);
 
                 return (
                     <SidebarItem
@@ -29,12 +37,11 @@ export function Sidebar({ matches, selectedMatch, setSelectedMatch, chartRef }: 
                         onClick={() => {
                             setSelectedMatch(match);
                             if (chartRef?.current) {
-                                // Remove d3 plot when selecting a different match item
                                 d3.select(chartRef.current).selectAll("svg").remove();
                             }
                         }}
                         title={`${match.homeTeam} vs ${match.awayTeam}`}
-                        subtitle={`Date: ${match.date}`}
+                        subtitle={`Date: ${match.date} | Score: ${match.score} (${outcome})`}
                         cpi={`Coventry Performance Index (CPI): ${cpiText}`}
                     />
                 );
