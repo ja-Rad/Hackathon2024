@@ -34,95 +34,118 @@ And go to: [http://localhost:3000](http://localhost:3000) with your browser
 node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 ```
 
+# Project Structure
 
-Project Structure
-=================
+## Hackathon2024/
 
-app/
-├── api/
-│   ├── auth/
-│   │   ├── [...nextauth]/
-│   │   │   └── route.ts                     # NextAuth.js authentication routes
-│   │   ├── auth.ts                          # Custom authentication logic
-│   │   ├── bcrypt.ts                        # Password hashing utilities
-│   │   └── nextauth.d.ts                    # Type declarations for NextAuth.js
-│   ├── football-matches/
-│   │   └── route.ts                         # API routes for football match data
-│   ├── generate-ai-advice/
-│   │   └── route.ts                         # API route for generating AI advice
-│   ├── login/
-│   │   └── route.ts                         # API route for user login
-│   ├── register/
-│   │   └── route.ts                         # API route for user registration
-│   ├── reset-password/
-│   │   └── route.ts                         # API route for password reset
-│   ├── test-mongo-connection/
-│   │   └── route.ts                         # API route to test MongoDB connection
-│   └── upload-csv/
-│       └── route.ts                         # API route for handling CSV uploads
-├── components/
-│   ├── AverageMetricsChart.tsx              # Chart component for average metrics
-│   ├── ChartSection.tsx                     # Chart section for match insights
-│   ├── DashboardClient.tsx                  # Main dashboard client-side rendering
-│   ├── MainContent.tsx                      # Main content component
-│   ├── MatchDetails.tsx                     # Match details component
-│   ├── MetricCategory.tsx                   # Metric category display component
-│   ├── Navbar.tsx                           # Navbar component
-│   ├── SessionProviderWrapper.tsx           # Session provider for authentication
-│   ├── Sidebar.tsx                          # Sidebar component for navigation
-│   ├── SidebarItem.tsx                      # Individual sidebar item
-│   ├── SpiderChart.tsx                      # Spider chart for performance metrics
-│   ├── TooltipIcon.tsx                      # Tooltip for additional info
-│   └── UploadCSVClient.tsx                  # Client component for CSV upload
-├── dashboard/
-│   ├── services/
-│   │   └── dashboardHandler.ts              # Service functions for dashboard data
-│   └── page.tsx                             # Dashboard page
-├── document-uploader/
-│   ├── services/
-│   │   └── csvHandlers.ts                   # Service for handling CSV uploads
-│   └── page.tsx                             # CSV upload page
-├── hooks/
-│   └── useMetrics.ts                        # Custom hook for metrics state
-├── insights/
-│   ├── [id]/
-│   │   ├── services/
-│   │   │   ├── insightsHandlers.ts          # Service for fetching insights
-│   │   │   └── metricsMapper.ts             # Mapper for metrics data
-│   │   └── page.tsx                         # Page for match insights
-├── lib/
-│   ├── fonts.ts                             # Font configuration
-│   └── mongodb.ts                           # MongoDB connection utilities
-├── login/
-│   └── page.tsx                             # Login page
-├── register/
-│   └── page.tsx                             # Registration page
-├── reset-password/
-│   └── page.tsx                             # Password reset page
-├── favicon.ico                              # Application favicon
-├── globals.css                              # Global CSS file
-└── layout.tsx                               # Application layout file
+-   **api/**
 
-public/
-├── files/
-│   └── CCFC_match_lineups_data.csv          # Sample CSV file for matches
-├── images/
-│   └── logo.png                             # Application logo
-└── videos/                                  # Placeholder for video assets
+    -   **auth/**
+        -   [...nextauth]/
+            -   `route.ts` - NextAuth.js authentication routes
+        -   `auth.ts` - Custom authentication logic
+        -   `bcrypt.ts` - Password hashing utilities
+        -   `nextauth.d.ts` - Type declarations for NextAuth.js
+    -   **football-matches/**
+        -   `route.ts` - API routes for football match data
+    -   **generate-ai-advice/**
+        -   `route.ts` - API route for generating AI advice
+    -   **login/**
+        -   `route.ts` - API route for user login
+    -   **register/**
+        -   `route.ts` - API route for user registration
+    -   **reset-password/**
+        -   `route.ts` - API route for password reset
+    -   **test-mongo-connection/**
+        -   `route.ts` - API route to test MongoDB connection
+    -   **upload-csv/**
+        -   `route.ts` - API route for handling CSV uploads
 
-.gitignore                                   # Git ignore rules
-docker-compose.yml                           # Docker Compose configuration
-eslint.config.mjs                            # ESLint configuration
-middleware.ts                                # Middleware configuration
-mongo-init.js                                # MongoDB initialization script
-next.config.ts                               # Next.js configuration
-package.json                                 # Project dependencies and scripts
-package-lock.json                            # Lockfile for npm dependencies
-postcss.config.mjs                           # PostCSS configuration
-README.md                                    # Project documentation
-tailwind.config.ts                           # Tailwind CSS configuration
-tsconfig.json                                # TypeScript configuration
+-   **components/**
 
+    -   `AverageMetricsChart.tsx` - Chart component for average metrics
+    -   `ChartSection.tsx` - Chart section for match insights
+    -   `DashboardClient.tsx` - Main dashboard client-side rendering
+    -   `MainContent.tsx` - Main content component
+    -   `MatchDetails.tsx` - Match details component
+    -   `MetricCategory.tsx` - Metric category display component
+    -   `Navbar.tsx` - Navbar component
+    -   `SessionProviderWrapper.tsx` - Session provider for authentication
+    -   `Sidebar.tsx` - Sidebar component for navigation
+    -   `SidebarItem.tsx` - Individual sidebar item
+    -   `SpiderChart.tsx` - Spider chart for performance metrics
+    -   `TooltipIcon.tsx` - Tooltip for additional info
+    -   `UploadCSVClient.tsx` - Client component for CSV upload
+
+-   **dashboard/**
+
+    -   **services/**
+        -   `dashboardHandler.ts` - Service functions for dashboard data
+    -   `page.tsx` - Dashboard page
+
+-   **document-uploader/**
+
+    -   **services/**
+        -   `csvHandlers.ts` - Service for handling CSV uploads
+    -   `page.tsx` - CSV upload page
+
+-   **hooks/**
+
+    -   `useMetrics.ts` - Custom hook for metrics state
+
+-   **insights/**
+
+    -   **[id]/**
+        -   **services/**
+            -   `insightsHandlers.ts` - Service for fetching insights
+            -   `metricsMapper.ts` - Mapper for metrics data
+        -   `page.tsx` - Page for match insights
+
+-   **lib/**
+
+    -   `fonts.ts` - Font configuration
+    -   `mongodb.ts` - MongoDB connection utilities
+
+-   **login/**
+
+    -   `page.tsx` - Login page
+
+-   **register/**
+
+    -   `page.tsx` - Registration page
+
+-   **reset-password/**
+
+    -   `page.tsx` - Password reset page
+
+-   `favicon.ico` - Application favicon
+-   `globals.css` - Global CSS file
+-   `layout.tsx` - Application layout file
+
+## public/
+
+-   **files/**
+    -   `CCFC_match_lineups_data.csv` - Sample CSV file for matches
+-   **images/**
+    -   `logo.png` - Application logo
+-   **videos/**
+    -   Placeholder for video assets
+
+## Root Files
+
+-   `.env` - Environment variables
+-   `.gitignore` - Git ignore rules
+-   `docker-compose.yml` - Docker Compose configuration
+-   `eslint.config.mjs` - ESLint configuration
+-   `middleware.ts` - Middleware configuration
+-   `mongo-init.js` - MongoDB initialization script
+-   `next.config.ts` - Next.js configuration
+-   `package.json` - Project dependencies and scripts
+-   `package-lock.json` - Lockfile for npm dependencies
+-   `postcss.config.mjs` - PostCSS configuration
+-   `README.md` - Project documentation
+-   `tailwind.config.ts` - Tailwind CSS configuration
+-   `tsconfig.json` - TypeScript configuration
 
 ## Useful APIs to Test the App:
 
@@ -177,6 +200,7 @@ This document outlines the API endpoints for the application.
         {
         "message": "<error_message>"
         }
+
 ---
 
 2. /api/generate-ai-advice
@@ -199,6 +223,7 @@ This document outlines the API endpoints for the application.
         {
         "advice": "<error_message>"
         }
+
 ---
 
 3. /api/login
@@ -224,6 +249,7 @@ This document outlines the API endpoints for the application.
         }
 -   Cookies:
     -   Sets a session token (`next-auth.session-token`) upon successful login.
+
 ---
 
 4. /api/register
@@ -247,6 +273,7 @@ This document outlines the API endpoints for the application.
         {
         "error": "<error_message>"
         }
+
 ---
 
 5. /api/reset-password
@@ -270,6 +297,7 @@ This document outlines the API endpoints for the application.
         {
         "error": "<error_message>"
         }
+
 ---
 
 6. /api/test-mongo-connection
@@ -292,6 +320,7 @@ This document outlines the API endpoints for the application.
         "message": "Error connecting to MongoDB",
         "error": "<error_message>"
         }
+
 ---
 
 7. /api/upload-csv
@@ -318,6 +347,7 @@ This document outlines the API endpoints for the application.
         {
         "message": "<error_message>"
         }
+
 ---
 
 8. /api/auth/session
