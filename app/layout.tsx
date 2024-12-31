@@ -1,24 +1,21 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import SessionProviderWrapper from "./components/SessionProviderWrapper";
-
-const inter = Inter({ subsets: ["latin"] });
+import { mainFont } from "./lib/fonts";
 
 export const metadata: Metadata = {
-    title: "VisionFC",
-    description: "VisionFC",
+    title: "Phantom Hackers - VisionFC",
+    description: "Whackwinnerz' Warwick hackathon project",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
         <html lang="en">
-            <body className={`${inter.className} bg-gray-100 dark:bg-gray-900 min-h-screen flex flex-col`}>
+            <body className={`${mainFont.className} bg-gray-100 dark:bg-gray-900 min-h-screen flex flex-col`}>
                 <SessionProviderWrapper>
                     <Navbar />
                     <main>{children}</main>
-                    {/* <Footer /> */}
                 </SessionProviderWrapper>
             </body>
         </html>
