@@ -15,8 +15,7 @@ declare global {
 }
 
 if (process.env.NODE_ENV === "development") {
-    if (!global._mongoClientPromise) {
-        // NOSONAR
+    if (!global._mongoClientPromise) { // NOSONAR
         client = new MongoClient(uri);
         global._mongoClientPromise = client.connect();
     }
