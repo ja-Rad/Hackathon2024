@@ -32,7 +32,7 @@ export default function DashboardClient() {
             const [homeScore, awayScore] = selectedMatch.score.split(" - ").map(Number);
             if (selectedMatch.homeTeam === "Coventry City" && homeScore > awayScore) {
                 setShowConfetti(true);
-                setTimeout(() => setShowConfetti(false), 5000); // Show confetti for 5 seconds
+                setTimeout(() => setShowConfetti(false), 3000); // Show confetti for 3 seconds
             }
         }
     }, [selectedMatch]);
