@@ -33,6 +33,10 @@ export default function UploadCSVClient() {
 
         setIsLoading(true); // Show loading screen
         try {
+            /*
+                Delete footballMatches collection prior to uploading a new one 
+                so that CSV data from multiple files doesn't stack on each other
+            */
             await fetch("/api/football-matches", { method: "DELETE" });
 
             const csvString = await csvFile.text();

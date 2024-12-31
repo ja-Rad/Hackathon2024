@@ -20,6 +20,10 @@ export const uploadDataToDatabase = async (data: object[]): Promise<void> => {
 };
 
 export const handleTestDataUpload = async (): Promise<void> => {
+    /*
+        Delete footballMatches collection prior to uploading a new one 
+        so that CSV data from multiple files doesn't stack on each other
+    */
     await fetch("/api/football-matches", { method: "DELETE" });
 
     const response = await fetch("/files/CCFC_match_lineups_data.csv");
