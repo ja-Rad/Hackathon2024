@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { hashPassword } from "@/app/utils/bcrypt";
+import { hashPassword } from "@/app/api/auth/bcrypt";
 import clientPromise from "@/app/lib/mongodb";
 
 export async function POST(req: Request) {
